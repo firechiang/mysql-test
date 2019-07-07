@@ -1,6 +1,6 @@
-#### 一、[CentOS安装][1]
-#### 二、[Explain执行计划][2]
-#### 三、简单使用
+#### 一、[Centos单节点安装][1]
+#### 二、[Explain执行计划说明][2]
+#### 三、常用操作简单使用
 ```bash
 truncate table 表名;                                                                    # 清空整张表数据
 
@@ -35,5 +35,5 @@ $ mysqldump -uroot -p test  person --where="id=1" > /home/tools/4.txt
 #mysql -h数据库所在ip -u用户名 -p -N -e"查询语句" 库名 > 导出文件所在目录
 $ mysql -h127.0.0.1 -uroot -p -N -e"select * from person" test > /home/tools/1.txt
 ```
-[1]: https://github.com/firechiang/mysql-test/blob/master/docs/1-setup-single.md
+[1]: https://github.com/firechiang/mysql-test/blob/master/docs/setup-single-install.md
 [2]: https://github.com/firechiang/mysql-test/blob/master/docs/explain-explain.md
