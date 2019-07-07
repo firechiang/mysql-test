@@ -1,4 +1,5 @@
-#### 一、[Centos单节点安装][1]
+#### 一、[Centos Oracle-MySQL-8.0单节点安装][1]（不推荐使用）
+#### 二、[Centos Percona-Server-5.7.22单节点安装][3]（推荐生产使用）
 #### 二、[Explain执行计划说明][2]
 #### 三、常用操作简单使用
 ```bash
@@ -35,5 +36,29 @@ $ mysqldump -uroot -p test  person --where="id=1" > /home/tools/4.txt
 #mysql -h数据库所在ip -u用户名 -p -N -e"查询语句" 库名 > 导出文件所在目录
 $ mysql -h127.0.0.1 -uroot -p -N -e"select * from person" test > /home/tools/1.txt
 ```
+
+#### 八、找回root账号密码
+##### 8.1 修改[vi /etc/my.cnf]添加如下配置
+```bash
+skip-grant-tables                                              # 跳过用户名密码验证
+```
+##### 8.2 重启mysql服务
+```bash
+$ service mysqld restart                                       # 重启服务
+```
+##### 8.3 修改root密码
+```bash
+$ mysql                                                        # 进入MySQL服务
+$ use mysql;                                                   # 进入MySQL系统库
+# 修改root账号密码
+$ update user set password = password('Jiang@123') where user = 'root';
+$ flush privileges;                                            # 刷新权限
+```
+##### 8.4 删除[vi /etc/my.cnf]配置文件里面的 skip-grant-tables（跳过用户名密码验证）
+##### 8.5 重启mysql服务
+```bash
+$ service mysqld restart                                       # 重启服务
+```
 [1]: https://github.com/firechiang/mysql-test/blob/master/docs/setup-single-install.md
 [2]: https://github.com/firechiang/mysql-test/blob/master/docs/explain-explain.md
+[3]: https://github.com/firechiang/mysql-test/blob/master/docs/percona-server7-single-install.md
