@@ -2,7 +2,7 @@
 ```bash
 1，集群建议 2-3 个节点，过多影响性能，原因是数据强一直性的同步。建议每个节点硬件配置相同，因为是并行同步，配置低的哪个会拖慢同步速度。
 2，数据同步强一致性（镜像全量），任意节点都可写入和读取，事务在集群中要么同时提交，要么不提交。
-3，只有 InnoDB 引擎的数据才会被同步
+3，只有 InnoDB 引擎的数据才会被同步（注意：用户信息也会自动同步）
 ```
 #### 二、下载依赖安装包
 ```bash
@@ -36,7 +36,7 @@ $ yum localinstall *.rpm                                                  # 安�
 socket=/var/lib/mysql/mysql.sock
 
 [mysqld]
-# 数据目录
+# 数据目录（注意：InnoDB的日志就是该目录下的 innobackup.backup.log 文件，如果想看InnoDB的错误信息，查看该文件即可）
 datadir=/var/lib/mysql
 socket=/var/lib/mysql/mysql.sock
 # 日志目录
