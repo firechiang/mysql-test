@@ -102,12 +102,30 @@ $ firewall-cmd --reload                                        # 刷新配置
 SELINUX=disabled
 ```
 
-#### 八、启动创建集群引导节点（注意：集群中任选一台机器执行）
+#### 八、启动集群引导节点（注意：如果是旧集群，选择最后停止的那机器执行。如果是新建集群，任选一台机器执行）
 ```bash
-$ systemctl start mysql@bootstrap.service
+$ systemctl start mysql@bootstrap.service                      # 启动集群引导节点
+$ systemctl restart mysql@bootstrap.service                    # 重启集群引导节点
+$ systemctl stop mysql@bootstrap.service                       # 停止集群引导节点
 ```
 
-#### 九、启动集群其它节点
+#### 九、修改root账号密码和创建数据同步账号admin（注意：在集群引导节点上执行）
+```bash
+$ grep 'temporary password' /var/log/mysqld.log                # 查看mysql默认root账号密码
+$ mysql -uroot -p                                              # 进入MySQL服务
+$ ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jiang@123';     # 设置root用户密码为 Jiang@123，且只有本地能登录                 
+$ show databases;                                              # 查看所有库
+$ use mysql;                                                   # 进入MySQL系统库
+# 以下修改看实际情况而定
+$ select user,host from user;                                  # 查看MySQL授权用户信息（字段 host允许远程访问的ip）
+$ update user set host = '%' where user = 'root';              # 修改root用户允许所有IP访问
+# 创建数据同步账号admin
+$ CREATE USER 'admin'@'%' IDENTIFIED BY 'Jiang@123';           # 创建用户admin密码Jiang@123，%是指所有IP都可以连接
+$ GRANT all privileges ON *.* TO 'admin'@'%';                  # 将所有权限都赋给admin账号
+$ flush privileges;                                            # 刷新权限
+```
+
+#### 十、启动集群其它节点
 ```bash
 $ service mysql start                                          # 启动服务
 $ service mysql restart                                        # 重启服务
