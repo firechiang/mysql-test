@@ -22,7 +22,7 @@ $ yum localinstall *.rpm
 ```bash
 character_set_server=utf8
 bind-address=0.0.0.0
-# 跳过DNS解析（注意：如果使用主机名，请不要跳过DNS解析）
+# 跳过DNS解析
 skip-name-resolve
 ```
 

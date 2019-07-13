@@ -53,7 +53,7 @@ expire_logs_days=7
 character_set_server=utf8
 # 绑定
 bind-address=0.0.0.0
-# 跳过DNS解析（注意：如果使用主机名，请不要跳过DNS解析）
+# 跳过DNS解析
 skip-name-resolve
 
 # 建议禁用符号链接以防止各种安全风险
@@ -114,12 +114,9 @@ $ systemctl stop mysql@bootstrap.service                       # 停止集群引
 $ grep 'temporary password' /var/log/mysqld.log                # 查看mysql默认root账号密码
 $ mysql -uroot -p                                              # 进入MySQL服务
 $ ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jiang@123';     # 设置root用户密码为 Jiang@123，且只有本地能登录                 
-$ show databases;                                              # 查看所有库
 $ use mysql;                                                   # 进入MySQL系统库
-# 以下修改看实际情况而定
-$ select user,host from user;                                  # 查看MySQL授权用户信息（字段 host允许远程访问的ip）
-$ update user set host = '%' where user = 'root';              # 修改root用户允许所有IP访问
-# 创建数据同步账号admin
+$ update user set host = '%' where user = 'root';              # 修改root用户允许所有IP访问（注意：修改看实际情况而定）
+# 创建数据同步账号admin（注意：我们在配置文件里面配的就是这个账号）
 $ CREATE USER 'admin'@'%' IDENTIFIED BY 'Jiang@123';           # 创建用户admin密码Jiang@123，%是指所有IP都可以连接
 $ GRANT all privileges ON *.* TO 'admin'@'%';                  # 将所有权限都赋给admin账号
 $ flush privileges;                                            # 刷新权限
