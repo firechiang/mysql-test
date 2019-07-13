@@ -143,7 +143,7 @@ $ chkconfig mysqld on                                          # 开启开机启
 $ chkconfig mysqld off                                         # 禁止开机启动（集群模式，建议禁止开机启动）
 ```
 
-#### 十一、集群相关操作
+#### 十一、集群相关操作和说明
 ```bash
 $ mysql -uroot -p                                              # 进入MySQL服务
 $ show status like 'wsrep_cluster%';                           # 查看集群和当前节点的状态信息
