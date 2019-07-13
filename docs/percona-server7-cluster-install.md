@@ -10,7 +10,7 @@
 $ wget -P /home/tools/Percona-XtraDB-Cluster https://www.percona.com/downloads/Percona-XtraDB-Cluster-LATEST/Percona-XtraDB-Cluster-5.7.26-31.37/binary/redhat/7/x86_64/Percona-XtraDB-Cluster-5.7.26-31.37-r505-el7-x86_64-bundle.tar
 # 下载 qpree解压缩工具
 $ wget -P /home/tools/Percona-XtraDB-Cluster https://repo.percona.com/release/7/RPMS/x86_64/qpress-11-1.el7.x86_64.rpm
-# 下载 Percona Server 依赖
+# 下载数据同步插件
 $ wget -P /home/tools/Percona-XtraDB-Cluster https://repo.percona.com/release/7/RPMS/x86_64/percona-xtrabackup-24-2.4.15-1.el7.x86_64.rpm
 $ wget -P /home/tools/Percona-XtraDB-Cluster https://repo.percona.com/release/7/RPMS/x86_64/percona-xtrabackup-24-debuginfo-2.4.15-1.el7.x86_64.rpm
 $ wget -P /home/tools/Percona-XtraDB-Cluster https://repo.percona.com/release/7/RPMS/x86_64/percona-xtrabackup-test-24-2.4.15-1.el7.x86_64.rpm
@@ -85,8 +85,16 @@ binlog_format=ROW
 default_storage_engine=InnoDB
 # 主键自增不锁表
 innodb_autoinc_lock_mode=2
-# 集群同步相关超时配置
-wsrep_provider_options = "evs.keepalive_period = PT3S; evs.inactive_check_period = PT10S; evs.suspect_timeout = PT30S; evs.inactive_timeout = PT1M; evs.consensus_timeout = PT1M;gmcast.peer_timeout=PT30S"
+
+# 集群同步超时相关配置，说明如下
+# evs.keepalive_period      控制多久发送一次keepalive请求信号
+# evs.inactive_check_period 控制多久检测一次节点活动/静止状态
+# evs.suspect_timeout       控制某个节点是否被标识为suspected状态的时间间隔
+# evs.inactive_timeout      控制节点不活动时检测周期
+# evs.consensus_timeout     控制多久检测一次节点一致性 通过上面的设置，可以使节点超时时间为30秒
+# evs.inactive_timeout参数必须不小于evs.suspect_timeout， evs.consensus_timeout必须不小于evs.inactive_timeout
+# 示例配置如下
+#wsrep_provider_options = "evs.keepalive_period = PT3S; evs.inactive_check_period = PT10S; evs.suspect_timeout = PT30S; evs.inactive_timeout = PT1M; evs.consensus_timeout = PT1M;gmcast.peer_timeout=PT30S"
 ```
 #### 六、开放 Percona XtraDB Cluster 所使用的端口（注意：集群每个节点都要配置）
 ```bash
@@ -97,7 +105,7 @@ $ firewall-cmd --zone=public --add-port=4568/tcp --permanent   # 开放4568（�
 $ firewall-cmd --reload                                        # 刷新配置
 ```
 
-#### 七、修改[vi /etc/selinux/config]关闭SELinux安全验证（不建议关闭）（注意：集群每个节点都要修改，需要重启机器才能生效）
+#### 七、修改[vi /etc/selinux/config]关闭SELinux安全验证（注意：集群每个节点都要修改，需要重启机器才能生效）
 ```bash
 SELINUX=disabled
 ```
@@ -109,7 +117,7 @@ $ systemctl restart mysql@bootstrap.service                    # 重启集群引
 $ systemctl stop mysql@bootstrap.service                       # 停止集群引导节点
 ```
 
-#### 九、修改root账号密码和创建数据同步账号admin（注意：在集群引导节点上执行）
+#### 九、修改root账号密码和创建数据同步账号admin（注意：在集群引导节点上执行，因为如果集群引导节点上没有admin账号，其它节点将无法加入集群）
 ```bash
 $ grep 'temporary password' /var/log/mysqld.log                # 查看mysql默认root账号密码
 $ mysql -uroot -p                                              # 进入MySQL服务
@@ -129,6 +137,12 @@ $ service mysql restart                                        # 重启服务
 $ service mysql stop                                           # 停止服务
 $ chkconfig mysqld on                                          # 开启开机启动
 $ chkconfig mysqld off                                         # 禁止开机启动（集群模式，建议禁止开机启动）
+```
+
+#### 十一、集群相关操作
+```bash
+$ mysql -uroot -p                                              # 进入MySQL服务
+$ show status like 'wsrep_cluster%';                           # 查看集群状态信息
 ```
 
 
