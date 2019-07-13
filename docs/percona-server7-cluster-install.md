@@ -3,6 +3,7 @@
 1，集群建议 2-3 个节点，过多影响性能，原因是数据强一直性的同步。建议每个节点硬件配置相同，因为是并行同步，配置低的哪个会拖慢同步速度。
 2，数据同步强一致性（镜像全量），任意节点都可写入和读取，事务在集群中要么同时提交，要么不提交。
 3，只有 InnoDB 引擎的数据才会被同步（注意：用户信息也会自动同步）
+4，如果集群出项脑裂，超过半数的那一边对外提供服务，没有超过半数的默认暂态对外提供服务
 ```
 #### 二、下载依赖安装包
 ```bash
@@ -143,85 +144,96 @@ $ chkconfig mysqld off                                         # 禁止开机启
 #### 十一、集群相关操作
 ```bash
 $ mysql -uroot -p                                              # 进入MySQL服务
-$ show status like 'wsrep_cluster%';                           # 查看集群状态信息
+$ show status like 'wsrep_cluster%';                           # 查看集群和当前节点的状态信息
++--------------------------+---------------------------------+
+| Variable_name            | Value                           |
++--------------------------+---------------------------------+
+| wsrep_cluster_weight     | 3                               |
+| wsrep_cluster_conf_id    | 3                               |
+| wsrep_cluster_size       | 3                               | # 集群节点总数量
+| wsrep_cluster_state_uuid | 0f6b0-a5d-11e9-a12c-9ffe44269d9 |
+| wsrep_cluster_status     | Primary                         | # 集群状态（Primary（正常），Non_Primary（出现裂脑），Disconnected（集群不可用（原因可能是脑裂所引起）））
++--------------------------+---------------------------------+
+
 $ show status like '%queue%';                                  # 查看集群同步数据的队列相关信息
 $ show status like 'wsrep_flow%';                              # 查看集群数据同步是否限速以及相关信息
+$ show status like 'wsrep_commit%';                            # 查看发送数据的队列当中，含有事务的数据，相关统计信息
 $ show status like '%wsrep%';                                  # 查看集群相关所有信息
-+----------------------------------+----------------------------------------------+
-| Variable_name                    | Value                                        |
-+----------------------------------+----------------------------------------------+
-| wsrep_local_state_uuid           | 0ff416b0-a55d-11e9-a12c-9ffe44269d49         |
-| wsrep_protocol_version           | 9                                            |
-| wsrep_last_applied               | 6                                            | # 同步应用次数（创建表，库，视图等等）
-| wsrep_last_committed             | 6                                            | # 事务提交次数
-| wsrep_replicated                 | 5                                            | # 向其它节点发送同步数据总次数
-| wsrep_replicated_bytes           | 1176                                         | # 向其它节点发送同步数据总大小
-| wsrep_repl_keys                  | 6                                            |
-| wsrep_repl_keys_bytes            | 168                                          |
-| wsrep_repl_data_bytes            | 663                                          |
-| wsrep_repl_other_bytes           | 0                                            |
-| wsrep_received                   | 11                                           | # 接收同步数据总次数
-| wsrep_received_bytes             | 970                                          | # 接收同步数据总大小
-| wsrep_local_commits              | 0                                            | 
-| wsrep_local_cert_failures        | 0                                            |
-| wsrep_local_replays              | 0                                            |
-| wsrep_local_send_queue           | 0                                            | # 当前发送数据的队列长度（重要，如果队列过长说明发送数据较慢）
-| wsrep_local_send_queue_max       | 1                                            | # 发送数据的队列最大长度
-| wsrep_local_send_queue_min       | 0                                            | # 发送数据的队列最小长度
-| wsrep_local_send_queue_avg       | 0.000000                                     | # 发送数据的队列平均长度（重要，如果队列过长说明发送数据较慢）
-| wsrep_local_recv_queue           | 0                                            | # 当前接收数据的队列长度（重要，如果队列过长说明接收写入数据较慢）
-| wsrep_local_recv_queue_max       | 2                                            | # 接收数据的队列最大长度
-| wsrep_local_recv_queue_min       | 0                                            | # 接收数据的队列最小长度
-| wsrep_local_recv_queue_avg       | 0.090909                                     | # 接收数据的队列平均长度（重要，如果队列过长说明接收写入数据较慢）
-| wsrep_local_cached_downto        | 1                                            |
-| wsrep_flow_control_paused_ns     | 0                                            | # 限速状态下的总时间（纳秒）
-| wsrep_flow_control_paused        | 0.000000                                     | # 限速时间的占比（0-1），如果值是0.1，说明该节点10%的时间，处于限速控制状态
-| wsrep_flow_control_sent          | 0                                            | # 发送限速命令给其它节点的总次数（一般只有当前节点发送数据的队列过长，才会发送限速命令给其它节点）
-| wsrep_flow_control_recv          | 0                                            | # 收到限速命令的总次数
-| wsrep_flow_control_interval      | [ 173, 173 ]                                 | # 触发限速的上限和下限（当队列到达上限就会拒绝新的同步请求，到达下限才会接收新的同步请求）
-| wsrep_flow_control_interval_low  | 173                                          | # 触发限速的下限
-| wsrep_flow_control_interval_high | 173                                          | # 触发限速的上限
-| wsrep_flow_control_status        | OFF                                          | # 限速状态（OFF没有限速，NO表示正在限速）
-| wsrep_cert_deps_distance         | 1.000000                                     |
-| wsrep_apply_oooe                 | 0.000000                                     |
-| wsrep_apply_oool                 | 0.000000                                     |
-| wsrep_apply_window               | 1.000000                                     |
-| wsrep_commit_oooe                | 0.000000                                     |
-| wsrep_commit_oool                | 0.000000                                     |
-| wsrep_commit_window              | 1.000000                                     |
-| wsrep_local_state                | 4                                            |
-| wsrep_local_state_comment        | Synced                                       |
-| wsrep_cert_index_size            | 2                                            |
-| wsrep_cert_bucket_count          | 22                                           |
-| wsrep_gcache_pool_size           | 3200                                         |
-| wsrep_causal_reads               | 0                                            |
-| wsrep_cert_interval              | 0.000000                                     |
-| wsrep_open_transactions          | 0                                            |
-| wsrep_open_connections           | 0                                            |
-| wsrep_ist_receive_status         |                                              |
-| wsrep_ist_receive_seqno_start    | 0                                            |
-| wsrep_ist_receive_seqno_current  | 0                                            |
-| wsrep_ist_receive_seqno_end      | 0                                            |
-| wsrep_incoming_addresses         | server001:3306,server002:3306,server003:3306 |
-| wsrep_cluster_weight             | 3                                            |
-| wsrep_desync_count               | 0                                            |
-| wsrep_evs_delayed                |                                              |
-| wsrep_evs_evict_list             |                                              |
-| wsrep_evs_repl_latency           | 0/0/0/0/0                                    |
-| wsrep_evs_state                  | OPERATIONAL                                  |
-| wsrep_gcomm_uuid                 | 0ff34b05-a55d-11e9-b834-e7d827b68b4c         |
-| wsrep_cluster_conf_id            | 3                                            |
-| wsrep_cluster_size               | 3                                            |
-| wsrep_cluster_state_uuid         | 0ff416b0-a55d-11e9-a12c-9ffe44269d49         |
-| wsrep_cluster_status             | Primary                                      |
-| wsrep_connected                  | ON                                           |
-| wsrep_local_bf_aborts            | 0                                            |
-| wsrep_local_index                | 0                                            |
-| wsrep_provider_name              | Galera                                       |
-| wsrep_provider_vendor            | Codership Oy <info@codership.com>            |
-| wsrep_provider_version           | 3.37(rff05089)                               |
-| wsrep_ready                      | ON                                           |
-+----------------------------------+----------------------------------------------+
++----------------------------------+-------------------------+
+| Variable_name                    | Value                   |
++----------------------------------+-------------------------+
+| wsrep_local_state_uuid           | 0fb0-a5d-11e9-a12c-949  |
+| wsrep_protocol_version           | 9                       |
+| wsrep_last_applied               | 6                       | # 同步应用次数（创建表，库，视图等等）
+| wsrep_last_committed             | 6                       | # 事务提交次数
+| wsrep_replicated                 | 5                       | # 向其它节点发送同步数据总次数
+| wsrep_replicated_bytes           | 1176                    | # 向其它节点发送同步数据总大小
+| wsrep_repl_keys                  | 6                       |
+| wsrep_repl_keys_bytes            | 168                     |
+| wsrep_repl_data_bytes            | 663                     |
+| wsrep_repl_other_bytes           | 0                       |
+| wsrep_received                   | 11                      | # 接收同步数据总次数
+| wsrep_received_bytes             | 970                     | # 接收同步数据总大小
+| wsrep_local_commits              | 0                       | 
+| wsrep_local_cert_failures        | 0                       |
+| wsrep_local_replays              | 0                       |
+| wsrep_local_send_queue           | 0                       | # 当前发送数据的队列长度（重要，如果队列过长说明发送数据较慢）
+| wsrep_local_send_queue_max       | 1                       | # 发送数据的队列最大长度
+| wsrep_local_send_queue_min       | 0                       | # 发送数据的队列最小长度
+| wsrep_local_send_queue_avg       | 0.000000                | # 发送数据的队列平均长度（重要，如果队列过长说明发送数据较慢）
+| wsrep_local_recv_queue           | 0                       | # 当前接收数据的队列长度（重要，如果队列过长说明接收写入数据较慢）
+| wsrep_local_recv_queue_max       | 2                       | # 接收数据的队列最大长度
+| wsrep_local_recv_queue_min       | 0                       | # 接收数据的队列最小长度
+| wsrep_local_recv_queue_avg       | 0.090909                | # 接收数据的队列平均长度（重要，如果队列过长说明接收写入数据较慢）
+| wsrep_local_cached_downto        | 1                       |
+| wsrep_flow_control_paused_ns     | 0                       | # 限速状态下的总时间（纳秒）
+| wsrep_flow_control_paused        | 0.000000                | # 限速时间的占比（0-1），如果值是0.1，说明该节点10%的时间，处于限速控制状态
+| wsrep_flow_control_sent          | 0                       | # 发送限速命令给其它节点的总次数（一般只有当前节点发送数据的队列过长，才会发送限速命令给其它节点）
+| wsrep_flow_control_recv          | 0                       | # 收到限速命令的总次数
+| wsrep_flow_control_interval      | [ 173, 173 ]            | # 触发限速的上限和下限（当队列到达上限就会拒绝新的同步请求，到达下限才会接收新的同步请求）
+| wsrep_flow_control_interval_low  | 173                     | # 触发限速的下限
+| wsrep_flow_control_interval_high | 173                     | # 触发限速的上限
+| wsrep_flow_control_status        | OFF                     | # 限速状态（OFF没有限速，ON表示正在限速）
+| wsrep_cert_deps_distance         | 1.000000                | # 并发执行事务的数量
+| wsrep_apply_oooe                 | 0.000000                | # 接收数据的队列当中需要执行事务的数量占比
+| wsrep_apply_oool                 | 0.000000                | # 接收数据的队列当中事务乱序执行的频率（当前节点执行事务的顺序和同步节点执行事务的顺序不一致的频率）
+| wsrep_apply_window               | 1.000000                | # 接收数据的队列当中含有事务的数据的平均数量
+| wsrep_commit_oooe                | 0.000000                | # 发送数据的队列当中需要执行事务的数量占比
+| wsrep_commit_oool                | 0.000000                | # 发送数据的队列当中事务乱序执行的频率（无意义，本地不存在乱序提交）
+| wsrep_commit_window              | 1.000000                | # 发送数据的队列当中含有事务的数据的平均数量
+| wsrep_local_state                | 4                       |
+| wsrep_local_state_comment        | Synced                  | # 当前节点状态（Open（启动成功），Primary（加入集群），Joiner（正在同步数据），Joined（数据同步成功），Synced（数据同步成功，可对外提供服务），Doner（正在全量同步数据，不可对外提供服务））
+| wsrep_cert_index_size            | 2                       |
+| wsrep_cert_bucket_count          | 22                      |
+| wsrep_gcache_pool_size           | 3200                    |
+| wsrep_causal_reads               | 0                       |
+| wsrep_cert_interval              | 0.000000                |
+| wsrep_open_transactions          | 0                       |
+| wsrep_open_connections           | 0                       |
+| wsrep_ist_receive_status         |                         |
+| wsrep_ist_receive_seqno_start    | 0                       |
+| wsrep_ist_receive_seqno_current  | 0                       |
+| wsrep_ist_receive_seqno_end      | 0                       |
+| wsrep_incoming_addresses         | s1:3306,s2:3306,s3:3306 | # 集群所有节点的IP或主机名
+| wsrep_cluster_weight             | 3                       |
+| wsrep_desync_count               | 0                       | # 集群延迟节点数量（延迟同步数据的节点数量）
+| wsrep_evs_delayed                |                         |
+| wsrep_evs_evict_list             |                         |
+| wsrep_evs_repl_latency           | 0/0/0/0/0               |
+| wsrep_evs_state                  | OPERATIONAL             |
+| wsrep_gcomm_uuid                 | 0fb05-a5d-11e9-b4-e7bfc |
+| wsrep_cluster_conf_id            | 3                       |
+| wsrep_cluster_size               | 3                       | # 集群节点数量
+| wsrep_cluster_state_uuid         | 0fb0-a5d-11e9-a12c-9f49 |
+| wsrep_cluster_status             | Primary                 | # 集群状态（Primary（正常），Non_Primary（出现裂脑），Disconnected（集群不可用（原因可能是脑裂所引起）））
+| wsrep_connected                  | ON                      | # 节点是否连接到集群（OFF 否，ON 是）
+| wsrep_local_bf_aborts            | 0                       |
+| wsrep_local_index                | 0                       |
+| wsrep_provider_name              | Galera                  |
+| wsrep_provider_vendor            | Codersh Oy <io@cp.com>  |
+| wsrep_provider_version           | 3.37(rff05089)          |
+| wsrep_ready                      | ON                      | # 集群是否可正常使用 OFF 否 ，NO 是
++----------------------------------+-------------------------+
 ```
 
 
