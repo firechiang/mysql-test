@@ -112,11 +112,13 @@ $ firewall-cmd --reload                                        # 刷新配置
 SELINUX=disabled
 ```
 
-#### 八、启动集群引导节点（注意：如果是旧集群，选择最后停止的那机器执行。如果是新建集群，任选一台机器执行）
+#### 八、启动集群引导节点（注意：如果是旧集群，选择最后停止的那机器执行（可通过查看mysql数据目录下grastate.dat文件里面safe_to_bootstrap属性的值（1是，0否），来判定节点是否最后停止）。如果是新建集群，任选一台机器执行）
 ```bash
 $ systemctl start mysql@bootstrap.service                      # 启动集群引导节点
 $ systemctl restart mysql@bootstrap.service                    # 重启集群引导节点
 $ systemctl stop mysql@bootstrap.service                       # 停止集群引导节点
+$ chkconfig mysqld on                                          # 开启开机启动
+$ chkconfig mysqld off                                         # 禁止开机启动（集群模式，建议禁止开机启动）
 ```
 
 #### 九、修改root账号密码和创建数据同步账号admin（注意：在集群引导节点上执行，因为如果集群引导节点上没有admin账号，其它节点将无法加入集群）
