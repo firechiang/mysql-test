@@ -134,7 +134,7 @@ $ GRANT all privileges ON *.* TO 'admin'@'%';                  # 将所有权限
 $ flush privileges;                                            # 刷新权限
 ```
 
-#### 十、启动集群其它节点（注意：集群启动须先启动引导节点，再启动其它节点。（引导节点启动方法，请看第八项））
+#### 十、启动集群其它节点（注意：如果集群当中没有正在运行的节点，必须先启动引导节点，再启动其它节点。（引导节点启动方法，请看第八项））
 ```bash
 $ service mysql start                                          # 启动服务
 $ service mysql restart                                        # 重启服务
