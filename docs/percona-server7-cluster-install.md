@@ -112,7 +112,7 @@ $ firewall-cmd --reload                                        # 刷新配置
 SELINUX=disabled
 ```
 
-#### 八、启动集群引导节点（注意：如果是旧集群，选择最后停止的那机器执行（可通过查看mysql数据目录下grastate.dat文件里面safe_to_bootstrap属性的值（1是，0否），来判定节点是否最后停止）。如果是新建集群，任选一台机器执行）
+#### 八、启动集群引导节点（注意：如果是旧集群，一定要选择最后停止的那机器执行（可通过查看mysql数据目录下grastate.dat文件里面safe_to_bootstrap属性的值（1是，0否），来判定节点是否最后停止，如果集群中没有是1的，找一台修改成1即可）。如果是新建集群，任选一台机器执行）
 ```bash
 $ systemctl start mysql@bootstrap.service                      # 启动集群引导节点
 $ systemctl restart mysql@bootstrap.service                    # 重启集群引导节点
@@ -152,7 +152,7 @@ $ show status like 'wsrep_cluster%';                           # 查看集群和
 +--------------------------+---------------------------------+
 | wsrep_cluster_weight     | 3                               |
 | wsrep_cluster_conf_id    | 3                               |
-| wsrep_cluster_size       | 3                               | # 集群节点总数量
+| wsrep_cluster_size       | 3                               | # 集群节点总数量（注意：如果右节点宕机，是不会减少这个数量的）
 | wsrep_cluster_state_uuid | 0f6b0-a5d-11e9-a12c-9ffe44269d9 |
 | wsrep_cluster_status     | Primary                         | # 集群状态（Primary（正常），Non_Primary（出现裂脑），Disconnected（集群不可用（原因可能是脑裂所引起）））
 +--------------------------+---------------------------------+
@@ -225,7 +225,7 @@ $ show status like '%wsrep%';                                  # 查看集群相
 | wsrep_evs_state                  | OPERATIONAL             |
 | wsrep_gcomm_uuid                 | 0fb05-a5d-11e9-b4-e7bfc |
 | wsrep_cluster_conf_id            | 3                       |
-| wsrep_cluster_size               | 3                       | # 集群节点数量
+| wsrep_cluster_size               | 3                       | # 集群节点数量（注意：如果右节点宕机，是不会减少这个数量的）
 | wsrep_cluster_state_uuid         | 0fb0-a5d-11e9-a12c-9f49 |
 | wsrep_cluster_status             | Primary                 | # 集群状态（Primary（正常），Non_Primary（出现裂脑），Disconnected（集群不可用（原因可能是脑裂所引起）））
 | wsrep_connected                  | ON                      | # 节点是否连接到集群（OFF 否，ON 是）
