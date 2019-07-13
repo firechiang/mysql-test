@@ -107,6 +107,7 @@ $ firewall-cmd --reload                                        # 刷新配置
 
 #### 七、修改[vi /etc/selinux/config]关闭SELinux安全验证（注意：集群每个节点都要修改，需要重启机器才能生效）
 ```bash
+#SELINUX=enforcing
 SELINUX=disabled
 ```
 
