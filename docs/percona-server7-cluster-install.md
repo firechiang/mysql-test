@@ -73,7 +73,7 @@ wsrep_cluster_address=gcomm://server001,server002,server003
 wsrep_provider=/usr/lib64/galera3/libgalera_smm.so
 # 数据同步方法（mysqldump，rsync，xtrabackup-v2）
 wsrep_sst_method=xtrabackup-v2
-# 数据同步最大线程数同步
+# 数据同步最大线程数（可加快数据同步速度）
 #wsrep_slave_threads=8
 # 同步数据时所使用的账号
 wsrep_sst_auth=admin:Jiang@123
@@ -144,6 +144,84 @@ $ chkconfig mysqld off                                         # 禁止开机启
 ```bash
 $ mysql -uroot -p                                              # 进入MySQL服务
 $ show status like 'wsrep_cluster%';                           # 查看集群状态信息
+$ show status like '%queue%';                                  # 查看集群同步数据的队列相关信息
+$ show status like 'wsrep_flow%';                              # 查看集群数据同步是否限速以及相关信息
+$ show status like '%WSREP%';                                  # 查看集群相关所有信息
++----------------------------------+----------------------------------------------+
+| Variable_name                    | Value                                        |
++----------------------------------+----------------------------------------------+
+| wsrep_local_state_uuid           | 0ff416b0-a55d-11e9-a12c-9ffe44269d49         |
+| wsrep_protocol_version           | 9                                            |
+| wsrep_last_applied               | 6                                            | # 同步应用次数（创建表，库，视图等等）
+| wsrep_last_committed             | 6                                            | # 事务提交次数
+| wsrep_replicated                 | 5                                            | # 向其它节点发送同步数据总次数
+| wsrep_replicated_bytes           | 1176                                         | # 向其它节点发送同步数据总大小
+| wsrep_repl_keys                  | 6                                            |
+| wsrep_repl_keys_bytes            | 168                                          |
+| wsrep_repl_data_bytes            | 663                                          |
+| wsrep_repl_other_bytes           | 0                                            |
+| wsrep_received                   | 11                                           | # 接收同步数据总次数
+| wsrep_received_bytes             | 970                                          | # 接收同步数据总大小
+| wsrep_local_commits              | 0                                            | 
+| wsrep_local_cert_failures        | 0                                            |
+| wsrep_local_replays              | 0                                            |
+| wsrep_local_send_queue           | 0                                            | # 当前发送数据的队列长度（重要，如果队列过长说明发送数据较慢）
+| wsrep_local_send_queue_max       | 1                                            | # 发送数据的队列最大长度
+| wsrep_local_send_queue_min       | 0                                            | # 发送数据的队列最小长度
+| wsrep_local_send_queue_avg       | 0.000000                                     | # 发送数据的队列平均长度（重要，如果队列过长说明发送数据较慢）
+| wsrep_local_recv_queue           | 0                                            | # 当前接收数据的队列长度（重要，如果队列过长说明接收写入数据较慢）
+| wsrep_local_recv_queue_max       | 2                                            | # 接收数据的队列最大长度
+| wsrep_local_recv_queue_min       | 0                                            | # 接收数据的队列最小长度
+| wsrep_local_recv_queue_avg       | 0.090909                                     | # 接收数据的队列平均长度（重要，如果队列过长说明接收写入数据较慢）
+| wsrep_local_cached_downto        | 1                                            |
+| wsrep_flow_control_paused_ns     | 0                                            | # 限速状态下的总时间（纳秒）
+| wsrep_flow_control_paused        | 0.000000                                     | # 限速时间的占比（0-1），如果值是0.1，说明该节点10%的时间，处于限速控制状态
+| wsrep_flow_control_sent          | 0                                            | # 发送限速命令给其它节点的总次数（一般只有当前节点发送数据的队列过长，才会发送限速命令给其它节点）
+| wsrep_flow_control_recv          | 0                                            | # 收到限速命令的总次数
+| wsrep_flow_control_interval      | [ 173, 173 ]                                 | # 触发限速的上限和下限（当队列到达上限就会拒绝新的同步请求，到达下限才会接收新的同步请求）
+| wsrep_flow_control_interval_low  | 173                                          | # 触发限速的下限
+| wsrep_flow_control_interval_high | 173                                          | # 触发限速的上限
+| wsrep_flow_control_status        | OFF                                          | # 限速状态（OFF没有限速，NO表示正在限速）
+| wsrep_cert_deps_distance         | 1.000000                                     |
+| wsrep_apply_oooe                 | 0.000000                                     |
+| wsrep_apply_oool                 | 0.000000                                     |
+| wsrep_apply_window               | 1.000000                                     |
+| wsrep_commit_oooe                | 0.000000                                     |
+| wsrep_commit_oool                | 0.000000                                     |
+| wsrep_commit_window              | 1.000000                                     |
+| wsrep_local_state                | 4                                            |
+| wsrep_local_state_comment        | Synced                                       |
+| wsrep_cert_index_size            | 2                                            |
+| wsrep_cert_bucket_count          | 22                                           |
+| wsrep_gcache_pool_size           | 3200                                         |
+| wsrep_causal_reads               | 0                                            |
+| wsrep_cert_interval              | 0.000000                                     |
+| wsrep_open_transactions          | 0                                            |
+| wsrep_open_connections           | 0                                            |
+| wsrep_ist_receive_status         |                                              |
+| wsrep_ist_receive_seqno_start    | 0                                            |
+| wsrep_ist_receive_seqno_current  | 0                                            |
+| wsrep_ist_receive_seqno_end      | 0                                            |
+| wsrep_incoming_addresses         | server001:3306,server002:3306,server003:3306 |
+| wsrep_cluster_weight             | 3                                            |
+| wsrep_desync_count               | 0                                            |
+| wsrep_evs_delayed                |                                              |
+| wsrep_evs_evict_list             |                                              |
+| wsrep_evs_repl_latency           | 0/0/0/0/0                                    |
+| wsrep_evs_state                  | OPERATIONAL                                  |
+| wsrep_gcomm_uuid                 | 0ff34b05-a55d-11e9-b834-e7d827b68b4c         |
+| wsrep_cluster_conf_id            | 3                                            |
+| wsrep_cluster_size               | 3                                            |
+| wsrep_cluster_state_uuid         | 0ff416b0-a55d-11e9-a12c-9ffe44269d49         |
+| wsrep_cluster_status             | Primary                                      |
+| wsrep_connected                  | ON                                           |
+| wsrep_local_bf_aborts            | 0                                            |
+| wsrep_local_index                | 0                                            |
+| wsrep_provider_name              | Galera                                       |
+| wsrep_provider_vendor            | Codership Oy <info@codership.com>            |
+| wsrep_provider_version           | 3.37(rff05089)                               |
+| wsrep_ready                      | ON                                           |
++----------------------------------+----------------------------------------------+
 ```
 
 
