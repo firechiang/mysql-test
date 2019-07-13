@@ -53,7 +53,7 @@ expire_logs_days=7
 character_set_server=utf8
 # 绑定
 bind-address=0.0.0.0
-# 跳过DNS解析
+# 跳过DNS解析（注意：如果使用主机名，请不要跳过DNS解析）
 skip-name-resolve
 
 # 建议禁用符号链接以防止各种安全风险
@@ -85,6 +85,8 @@ binlog_format=ROW
 default_storage_engine=InnoDB
 # 主键自增不锁表
 innodb_autoinc_lock_mode=2
+# 集群同步相关超时配置
+wsrep_provider_options = "evs.keepalive_period = PT3S; evs.inactive_check_period = PT10S; evs.suspect_timeout = PT30S; evs.inactive_timeout = PT1M; evs.consensus_timeout = PT1M;gmcast.peer_timeout=PT30S"
 ```
 #### 六、开放 Percona XtraDB Cluster 所使用的端口（注意：集群每个节点都要配置）
 ```bash
