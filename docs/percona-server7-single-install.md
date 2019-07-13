@@ -1,7 +1,7 @@
 #### 一、下载依赖安装包
 ```bash
 $ cd /home/tools
-# 下载 Percona-Server 5.7.22 安装包
+# 下载 Percona-Server 5.7.26 安装包
 wget -P /home/tools/percona-server https://www.percona.com/downloads/Percona-Server-5.7/Percona-Server-5.7.26-29/binary/redhat/7/x86_64/Percona-Server-5.7.26-29-r11ad961-el7-x86_64-bundle.tar
 # 内存分配器依赖用于解决内存碎片问题
 $ wget -P /home/tools/percona-server https://repo.percona.com/release/7/RPMS/x86_64/jemalloc-3.6.0-1.el7.x86_64.rpm
