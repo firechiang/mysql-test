@@ -3,6 +3,7 @@
 #### 三、[Centos Percona-Server-5.7.26镜像集群搭建][4]（推荐生产使用）
 #### 四、[MyCat 主键取模分片搭建][5]
 #### 五、[MyCat 根据某个字段的值分片搭建][6]（推荐生产使用）
+#### 六、[MyCat 父子表（某一条数据在哪个分片，其关联数据就在哪个分片）简单使用][7]
 #### 六、[Explain执行计划说明][2]
 #### 七、常用操作简单使用
 ```bash
@@ -68,3 +69,4 @@ $ service mysqld restart                                       # 重启服务
 [4]: https://github.com/firechiang/mysql-test/blob/master/docs/percona-server7-cluster-install.md
 [5]: https://github.com/firechiang/mysql-test/blob/master/docs/mycat-mod-use.md
 [6]: https://github.com/firechiang/mysql-test/blob/master/docs/mycat-custom-use.md
+[7]: https://github.com/firechiang/mysql-test/blob/master/docs/mycat-parent-use.md
