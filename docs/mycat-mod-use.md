@@ -127,8 +127,8 @@ SELINUX=disabled
 
 #### 八、开放 Mycat-Server 所使用的端口（注意：集群每个节点都要配置）
 ```bash
-$ firewall-cmd --zone=public --add-port=8066/tcp --permanent # 开放8066（Mycat-Server 数据服务端口（数据增删改查的端口））
-$ firewall-cmd --zone=public --add-port=9066/tcp --permanent # 开放9066（Mycat-Server 管理服务端口）
+$ firewall-cmd --zone=public --add-port=8066/tcp --permanent # 开放8066（Mycat-Server 数据服务端口（数据DML语句，增删改查的端口））
+$ firewall-cmd --zone=public --add-port=9066/tcp --permanent # 开放9066（Mycat-Server 管理服务端口（数据DDL语句，定义表修改字段的端口））
 $ firewall-cmd --reload                                      # 刷新配置
 ```
 
