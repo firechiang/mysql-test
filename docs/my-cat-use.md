@@ -10,9 +10,9 @@ $ cd /home/tools
 $ tar -zxvf Mycat-server-1.6.7.1-release-20190627191042-linux.tar.gz -C ../
 ```
 
-#### 三、修改[vi /home/mycat/conf/server.xml]配置虚拟用户名，密码，逻辑库。供客户端使用（注意：以下配置在文件末尾添加）
+#### 三、修改[vi /home/mycat/conf/server.xml]配置虚拟用户名，密码，逻辑库。供客户端使用（注意：先删除所有<user>标签，然后在文件末尾添加）
 ```bash
-<!-- 用户名 test_admin，密码 Jiang@123，可使用 test_test 库，拥有所有权限 -->
+<!-- 用户名 test_admin，密码 Jiang@123，可使用虚拟库test_test（就是schema.xml配置文件里面配置的那个schema名称），拥有所有权限 -->
 <user name="test_admin" defaultAccount="true">
     <property name="password">Jiang@123</property>
     <property name="schemas">test_test</property>
@@ -35,7 +35,7 @@ $ tar -zxvf Mycat-server-1.6.7.1-release-20190627191042-linux.tar.gz -C ../
 </user>
 ```
 
-#### 四、修改[vi /home/mycat/conf/schema.xml]配置连接，读写分离，负载均衡，数据表映射（注意：以下配置在文件末尾添加）
+#### 四、修改[vi /home/mycat/conf/schema.xml]配置连接，读写分离，负载均衡，数据表映射（注意：先删除原有的配置信息，然后在文件末尾添加）
 ```bash
 <!-- 配置数据库 test_test -->
 <schema name="test_test" checkSQLschema="false" sqlMaxLimit="100">
@@ -75,9 +75,9 @@ $ tar -zxvf Mycat-server-1.6.7.1-release-20190627191042-linux.tar.gz -C ../
 	<!-- 配置当前写节点带2个读节点 -->
 	<writeHost host="C1W3" url="server003:3306" user="root" password="Jiang@123">
 		<!-- 读节点 -->
-		<readHost host="C1W31" url="server001:3306" user="root" password="Jiang@123" />
+		<readHost host="C1W3R1" url="server001:3306" user="root" password="Jiang@123" />
 		<!-- 读节点 -->
-		<readHost host="C1W32" url="server002:3306" user="root" password="Jiang@123" />
+		<readHost host="C1W3R2" url="server002:3306" user="root" password="Jiang@123" />
 	</writeHost>
 </dataHost>
 
@@ -123,9 +123,12 @@ $ firewall-cmd --zone=public --add-port=9066/tcp --permanent # 开放9066（Myca
 $ firewall-cmd --reload                                      # 刷新配置
 ```
 
-#### 八、启动 Mycat-Server
+#### 八、Mycat-Server 基本操作
 ```bash
 $ cd /home/mycat/bin                                         # 到 Mycat-Server bin 目录
-$ ./startup_nowrap.sh                                        # 启动 Mycat-Server
+$ chmod -R 777 ./*.sh                                        # 赋予最高权限
+$ ./mycat start                                              # 启动 Mycat-Server
+$ ./mycat stop                                               # 停止 Mycat-Server
+$ ./mycat restart                                            # 重启 Mycat-Server
 ```
 
