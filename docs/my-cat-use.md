@@ -1,16 +1,24 @@
-#### 一、下载 Mycat-Server 安装包
+![object](https://github.com/firechiang/mysql-test/blob/master/image/mycat-sharding.svg)
+#### 一、数据分片算法简要说明
+```bash
+1，主键求模切分（使用于数据增长熟读慢，有明确组件的数据（难于增加分片））
+2，根据某个字段的值切分（使用于归类存储数据，使用大多数业务（容易增加分片））
+3，主键值范围切分（使用于数据快速增长（容易增加分片））
+4，日期切分（使用于数据快速增长（容易增加分片））
+```
+#### 二、下载 Mycat-Server 安装包
 ```bash
 $ wget -P /home/tools http://dl.mycat.io/1.6.7.1/Mycat-server-1.6.7.1-release-20190627191042-linux.tar.gz
 ```
 
-#### 二、安装Mycat-Server（注意：Mycat-Server实际是模拟MySQL节点）
+#### 三、安装Mycat-Server（注意：Mycat-Server实际是模拟MySQL节点）
 ```bash
 $ cd /home/tools
 # 解压到上层目录
 $ tar -zxvf Mycat-server-1.6.7.1-release-20190627191042-linux.tar.gz -C ../
 ```
 
-#### 三、修改[vi /home/mycat/conf/server.xml]配置虚拟用户名，密码，逻辑库。供客户端使用（注意：先删除所有<user>标签，然后在文件末尾添加）
+#### 四、修改[vi /home/mycat/conf/server.xml]配置虚拟用户名，密码，逻辑库。供客户端使用（注意：先删除所有<user>标签，然后在文件末尾添加）
 ```bash
 <!-- 用户名 test_admin，密码 Jiang@123，可使用虚拟库test_test（就是schema.xml配置文件里面配置的那个schema名称），拥有所有权限 -->
 <user name="test_admin" defaultAccount="true">
@@ -35,7 +43,7 @@ $ tar -zxvf Mycat-server-1.6.7.1-release-20190627191042-linux.tar.gz -C ../
 </user>
 ```
 
-#### 四、修改[vi /home/mycat/conf/schema.xml]配置连接，读写分离，负载均衡，数据表映射（注意：先删除原有的配置信息，然后在文件末尾添加）
+#### 五、修改[vi /home/mycat/conf/schema.xml]配置连接，读写分离，负载均衡，数据表映射（注意：先删除原有的配置信息，然后在文件末尾添加）
 ```bash
 <!-- 配置数据库 test_test -->
 <schema name="test_test" checkSQLschema="false" sqlMaxLimit="100">
@@ -103,27 +111,27 @@ $ tar -zxvf Mycat-server-1.6.7.1-release-20190627191042-linux.tar.gz -C ../
 </dataHost>
 ```
 
-#### 五、修改[vi /home/mycat/conf/rule.xml]配置切片算法相关信息（注意：我们上面使用了 mod-long（取模切片）算法，所以我们只需要修改切片数量即可（配置项已经存在，只需要修改值即可））
+#### 六、修改[vi /home/mycat/conf/rule.xml]配置切片算法相关信息（注意：我们上面使用了 mod-long（取模切片）算法，所以我们只需要修改切片数量即可（配置项已经存在，只需要修改值即可））
 ```bash
 <function name="mod-long" class="io.mycat.route.function.PartitionByMod">
 	<!-- 修改切片数量 -->
 	<property name="count">2</property>
 </function>
 ```
-#### 六、修改[vi /etc/selinux/config]关闭SELinux安全验证（注意：集群每个节点都要修改，需要重启机器才能生效）
+#### 七、修改[vi /etc/selinux/config]关闭SELinux安全验证（注意：集群每个节点都要修改，需要重启机器才能生效）
 ```bash
 #SELINUX=enforcing
 SELINUX=disabled
 ```
 
-#### 七、开放 Mycat-Server 所使用的端口（注意：集群每个节点都要配置）
+#### 八、开放 Mycat-Server 所使用的端口（注意：集群每个节点都要配置）
 ```bash
 $ firewall-cmd --zone=public --add-port=8066/tcp --permanent # 开放8066（Mycat-Server 数据服务端口（数据增删改查的端口））
 $ firewall-cmd --zone=public --add-port=9066/tcp --permanent # 开放9066（Mycat-Server 管理服务端口）
 $ firewall-cmd --reload                                      # 刷新配置
 ```
 
-#### 八、Mycat-Server 基本操作
+#### 九、Mycat-Server 基本操作
 ```bash
 $ cd /home/mycat/bin                                         # 到 Mycat-Server bin 目录
 $ chmod -R 777 ./*.sh                                        # 赋予最高权限
