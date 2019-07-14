@@ -1,10 +1,10 @@
 ![object](https://github.com/firechiang/mysql-test/blob/master/image/mycat-sharding.svg)
 #### 一、数据分片算法简要说明
 ```bash
-1，主键求模切分（使用于数据增长熟读慢，有明确组件的数据（难于增加分片，要增加分片数建议使用2*（原有分片数）增加），有利于数据切片）
-2，根据某个字段的值（数字）切分（使用于归类存储数据，使用大多数业务（容易增加分片））
-3，主键值范围切分（使用于数据快速增长（容易增加分片））
-4，日期切分（使用于数据快速增长（容易增加分片））
+1，主键求模切分（适用于数据增长熟读慢，有明确组件的数据（难于增加分片，要增加分片数建议使用2*（原有分片数）增加），有利于数据切片）
+2，根据某个字段的值（数字）切分（适用于归类存储数据，使用大多数业务（容易增加分片））
+3，主键值范围切分（适用于数据快速增长（容易增加分片））
+4，日期切分（适用于数据快速增长（容易增加分片））
 ```
 #### 二、下载 Mycat-Server 安装包
 ```bash
@@ -47,7 +47,8 @@ $ tar -zxvf Mycat-server-1.6.7.1-release-20190627191042-linux.tar.gz -C ../
 ```bash
 <!-- 配置数据库 test_test -->
 <schema name="test_test" checkSQLschema="false" sqlMaxLimit="100">
-    <!-- 表m_user，两个全量集群或节点 dn1,dn2，切片算法 mod-long（主键取模）-->
+    <!-- 以下可以配置多张表，每个表一个切片算法-->
+    <!-- 表m_user，两个全量集群或节点 dn1,dn2，切片规则 mod-long（主键取模）（就是rule.xml配置文件tableRule标签name的值）-->
     <table name="m_user" dataNode="dn1,dn2" rule="mod-long" />
 </schema>
 
@@ -140,3 +141,8 @@ $ ./mycat stop                                               # 停止 Mycat-Serv
 $ ./mycat restart                                            # 重启 Mycat-Server
 ```
 
+#### 十、Mycat-Server 热加载配置文件
+```bash
+$ mysql -h127.0.0.1 -P 9066 -utest_admin -p                  # 进入MyCat Server
+$ reload @@config_all;                                       # 热加载所有配置文件
+```

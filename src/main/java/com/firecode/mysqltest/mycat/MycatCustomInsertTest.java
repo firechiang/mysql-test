@@ -1,4 +1,4 @@
-package com.firecode.mysqltest;
+package com.firecode.mysqltest.mycat;
 
 import java.sql.Connection;
 import java.sql.DriverManager;
@@ -9,12 +9,12 @@ import java.util.concurrent.TimeUnit;
 import com.mysql.jdbc.Driver;
 
 /**
- * 测试Mycat数据插入
+ * 测试Mycat根据指定列的值，进行数据切片
  * 建表语句
- * create table m_user(id int(11) PRIMARY KEY,name char(20) NOT NULL)ENGINE=InnoDB DEFAULT CHARSET=utf8;
+ * create table m_dept(id int(11) PRIMARY KEY,sharding_id int(11) NOT NULL,name char(20) NOT NULL)ENGINE=InnoDB DEFAULT CHARSET=utf8;
  * @author JIANG
  */
-public class MycatInsertTest {
+public class MycatCustomInsertTest {
 	
 	/**
 	 * 注意先建表
@@ -28,11 +28,12 @@ public class MycatInsertTest {
 		String username = "test_admin";
 		String password = "Jiang@123";
 		Connection connection = DriverManager.getConnection(url,username,password);
-		String sql = "insert into m_user(id,name) values(?,?)";
+		String sql = "insert into m_dept(id,sharding_id,name) values(?,?,?)";
 		PreparedStatement pst = connection.prepareStatement(sql);
 			for (int i = 1; i < 10; i++) {
 				pst.setInt(1, i);
-				pst.setString(2, "www"+i);
+				pst.setInt(2, i%2==0?1000:2000);
+				pst.setString(3, "www"+i);
 				pst.execute();
 			}
 			TimeUnit.SECONDS.sleep(1);

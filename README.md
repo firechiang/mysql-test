@@ -1,15 +1,17 @@
 #### 一、[Centos Oracle-MySQL-8.0单节点搭建][1]（不推荐使用）
 #### 二、[Centos Percona-Server-5.7.26单节点搭建][3]（推荐生产使用）
 #### 三、[Centos Percona-Server-5.7.26镜像集群搭建][4]（推荐生产使用）
-#### 四、[Explain执行计划说明][2]
-#### 五、常用操作简单使用
+#### 四、[MyCat 主键取模分片搭建][5]
+#### 五、[MyCat 根据某个字段的值分片搭建][6]（推荐生产使用）
+#### 六、[Explain执行计划说明][2]
+#### 七、常用操作简单使用
 ```bash
 truncate table 表名;                                                                    # 清空整张表数据
 
 set global max_allowed_packet = 1024*1024;                                              # 加大mysq批量插入的数量
 ```
 
-#### 六、批量修改
+#### 八、批量修改
 ```bash
 insert into table (aa,bb,cc) values(xx,xx,xx),(oo,oo,oo) on duplicate key update        # 遇见相同的key修改，没有插入
 
@@ -17,7 +19,7 @@ replace into table (aa,bb,cc) values(xxx,xxx,xxx),(ooo,ooo,ooo),(ccc,ccc,ccc)   
 ```
 
 
-#### 七、查询元数据信息
+#### 九、查询元数据信息
 ```bash
 SELECT * FROM information_schema.columns WHERE column_name='job_name';                  # 查询所有表包含 job_name 列名
 
@@ -29,7 +31,7 @@ WHERE column_name='job_name'
 AND TABLE_SCHEMA != 'zxyreportdb'
 ```
 
-#### 八、数据查询导出
+#### 十、数据查询导出
 ```bash
 # mysqldump -u用户名 -p 库名 表名 --where="过滤条件"（不加 --where="过滤条件" 就是导出整张表） > 导出文件所在目录
 $ mysqldump -uroot -p test  person --where="id=1" > /home/tools/4.txt
@@ -38,7 +40,7 @@ $ mysqldump -uroot -p test  person --where="id=1" > /home/tools/4.txt
 $ mysql -h127.0.0.1 -uroot -p -N -e"select * from person" test > /home/tools/1.txt
 ```
 
-#### 九、找回root账号密码
+#### 十一、找回root账号密码
 ##### 9.1 修改[vi /etc/my.cnf]添加如下配置
 ```bash
 skip-grant-tables                                              # 跳过用户名密码验证
@@ -64,3 +66,5 @@ $ service mysqld restart                                       # 重启服务
 [2]: https://github.com/firechiang/mysql-test/blob/master/docs/explain-explain.md
 [3]: https://github.com/firechiang/mysql-test/blob/master/docs/percona-server7-single-install.md
 [4]: https://github.com/firechiang/mysql-test/blob/master/docs/percona-server7-cluster-install.md
+[5]: https://github.com/firechiang/mysql-test/blob/master/docs/mycat-mod-use.md
+[6]: https://github.com/firechiang/mysql-test/blob/master/docs/mycat-custom-use.md
