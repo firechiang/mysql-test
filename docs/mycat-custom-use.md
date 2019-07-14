@@ -131,7 +131,7 @@ $ tar -zxvf Mycat-server-1.6.7.1-release-20190627191042-linux.tar.gz -C ../
 </function>
 ```
 
-#### 七、修改[vi /home/mycat/conf/custom-field-sharding.txt]配置切片规则文件（注意：这个文件没有，要手动创建）
+#### 七、修改[vi /home/mycat/conf/custom-field-sharding.txt]配置切片规则文件（说明：值等于1000的放在第0个切片）（注意：这个文件没有，要手动创建）
 ```bash
 1000=0
 2000=1
