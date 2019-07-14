@@ -72,7 +72,7 @@ $ tar -zxvf Mycat-server-1.6.7.1-release-20190627191042-linux.tar.gz -C ../
     <!-- 心跳检测的sql语句 -->
     <heartbeat>select user()</heartbeat>
     
-    <!-- 配置读写节点（注意：如果写节点宕机了，要自动切换到其它写节点，所以我们在下面配置了3个写节点 C1W1，C1W2，C1W3） -->
+        <!-- 配置读写节点（注意：如果写节点宕机了，要自动切换到其它写节点，所以我们在下面配置了3个写节点 C1W1，C1W2，C1W3） -->
 	<!-- 配置当前写节点带2个读节点 -->
 	<writeHost host="C1W1" url="server001:3306" user="root" password="Jiang@123">
 		<!-- 读节点 -->
@@ -105,7 +105,7 @@ $ tar -zxvf Mycat-server-1.6.7.1-release-20190627191042-linux.tar.gz -C ../
 <dataHost name="cluster002" maxCon="1000" minCon="10" balance="2" writeType="1" dbType="mysql" dbDriver="native" switchType="1"  slaveThreshold="100">
     <!-- 心跳检测的sql语句 -->
     <heartbeat>select user()</heartbeat>
-    <!-- 配置读写节点（注意：如果写节点宕机了，要自动切换到其它写节点，所以我们在下面配置了2个写节点 C2W1，C2W2） -->
+        <!-- 配置读写节点（注意：如果写节点宕机了，要自动切换到其它写节点，所以我们在下面配置了2个写节点 C2W1，C2W2） -->
 	<!-- 配置当前写节点带1个读节点 -->
 	<writeHost host="C2W1" url="server005:3306" user="root" password="Jiang@123">
 		<!-- 读节点 -->
