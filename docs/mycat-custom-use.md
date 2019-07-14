@@ -48,7 +48,7 @@ $ tar -zxvf Mycat-server-1.6.7.1-release-20190627191042-linux.tar.gz -C ../
 <!-- 配置数据库 test_test -->
 <schema name="test_test" checkSQLschema="false" sqlMaxLimit="100">
     <!-- 以下可以配置多张表，每个表一个切片算法-->
-    <!-- 表m_dept，两个全量集群或节点 dn1,dn2，切片算法custom-field-int是我们在下面自定义的rule.xml配置文件tableRule标签name的值（根据sharding_id的值，进行切片）-->
+    <!-- 表m_dept，两个全量集群或节点 dn1,dn2，切片规则custom-field-sharding是我们在下面自定义的rule.xml配置文件tableRule标签name的值（根据sharding_id的值，进行切片）-->
     <table name="m_dept" dataNode="dn1,dn2" rule="custom-field-sharding" />
 </schema>
 
