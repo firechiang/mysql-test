@@ -1,4 +1,4 @@
-#### 一、Tpcc-MySQL所模拟的业务如下图所示
+#### 一、Tpcc-MySQL所模拟的业务场景如下图所示
 ![object](https://github.com/firechiang/mysql-test/blob/master/image/tpcc.svg)
 #### 二、下载源码包（建议使用下载地址：https://github.com/firechiang/mysql-test/raw/master/data/tpcc-mysql-master.tar.gz）
 ```bash
@@ -224,6 +224,89 @@ SET UNIQUE_CHECKS=@OLD_UNIQUE_CHECKS;
 
 #### 九、生成测试数据（注意：建立的仓库越多，数据量就越大，生成速度就越慢）
 ```bash
-$ cd /home/tools/tpcc-mysql-master                            # 进入tpcc-mysql解压目录
-$ ./tpcc_load -h 192.168.0.120 -d tpcc -u root -p jiang -w 1  # -w是指建立多少个仓库的数据（生产测试建议 >= 1000），-d是指数据库名称
+# 进入tpcc-mysql解压目录
+$ cd /home/tools/tpcc-mysql-master               
+# -w是指建立多少个仓库的数据（生产测试建议 >= 1000），-d是指数据库名称    
+$ ./tpcc_load -h 192.168.0.120 -d tpcc -u root -p jiang -w 1  
+```
+
+#### 十、开始测试
+```bash
+# 进入tpcc-mysql解压目录
+$ cd /home/tools/tpcc-mysql-master                            
+
+# -w测试多少个仓库的数据（注意：不能大于我们上面建立的仓库数量）（生产测试建议 >= 1000），-d是指数据库名称，-c并发线程数，-r数据库预热时间（单位秒）生产测试建议不低于1小时，-l测试时长（单位秒）生产测试建议不低于24小时
+$ ./tpcc_start -h 192.168.0.120 -d tpcc -u root -p jiang -w 1 -c 5 -r 300 -l 600 - >/home/tpcc-mysql-output.log
+
+# 最终的测试结果
+***************************************
+*** ###easy### TPC-C Load Generator ***
+***************************************
+# 以下是测试参数详情
+option h with value '192.168.0.120'
+option d with value 'tpcc'
+option u with value 'root'
+option p with value 'jiang'
+option w with value '1'
+option c with value '5'
+option r with value '300'
+option l with value '600'
+non-option ARGV-elements: - 
+<Parameters>
+     [server]: 192.168.0.120
+     [port]: 3306
+     [DBname]: tpcc
+       [user]: root
+       [pass]: jiang
+  [warehouse]: 1
+ [connection]: 5
+     [rampup]: 300 (sec.)
+    [measure]: 600 (sec.)
+
+RAMP-UP TIME.(300 sec.)
+
+MEASURING START.
+
+# 每隔一段统计读写结果如下
+  10, trx: 59, 95%: 688.333, 99%: 912.283, max_rt: 1234.065, 57|1065.631, 5|598.194, 6|2338.861, 6|4950.049
+  20, trx: 64, 95%: 709.673, 99%: 750.981, max_rt: 951.973, 67|1075.637, 7|383.505, 6|1717.045, 7|1708.650
+  30, trx: 60, 95%: 886.440, 99%: 917.761, max_rt: 1075.924, 56|552.011, 6|159.765, 7|1893.787, 6|1190.990
+STOPPING THREADS.....
+
+<Raw Results>
+  [0] sc:0 lt:3871  rt:0  fl:0 avg_rt: 527.6 (5)
+  [1] sc:0 lt:3855  rt:0  fl:0 avg_rt: 276.5 (5)
+  [2] sc:12 lt:375  rt:0  fl:0 avg_rt: 207.4 (5)
+  [3] sc:0 lt:386  rt:0  fl:0 avg_rt: 2280.7 (80)
+  [4] sc:0 lt:388  rt:0  fl:0 avg_rt: 1087.4 (20)
+ in 600 sec.
+
+# 最终测试统计结果
+<Raw Results2(sum ver.)>
+                                  成功执行次数    超时执行次数      重试执行次数    失败次数
+  [0]（新增订单）      sc:0       lt:3872     rt:0       fl:0 
+  [1]（支付订单）      sc:0       lt:3872     rt:0       fl:0 
+  [2]（订单状态变更）sc:12      lt:375      rt:0       fl:0 
+  [3]（发货业务）      sc:0       lt:387      rt:0       fl:0 
+  [4]（库存业务）      sc:0       lt:388      rt:0       fl:0 
+
+
+<Constraint Check> (all must be [OK])
+ # 事物执行测试结果（OK=已通过，NG=未通过）
+ [transaction percentage]
+        Payment（支付订单）:   43.38% (>=43.0%) [OK] 
+   Order-Status（订单状态变更）:4.35% (>= 4.0%) [OK] 
+       Delivery（发货业务）:   4.34% (>= 4.0%) [OK]   
+    Stock-Level（库存业务）:   4.37% (>= 4.0%) [OK] 
+    
+ # 响应时间测试结果（OK=已通过，NG=未通过）
+ [response time (at least 90% passed)]
+      New-Order（新增订单）:    0.00%  [NG] *
+        Payment（支付订单）:    0.00%  [NG] *
+   Order-Status（订单状态变更）:3.10%  [NG] *
+       Delivery（发货业务）:    0.00%  [NG] *
+    Stock-Level（库存业务）:    0.00%  [NG] *
+
+<TpmC>
+                 387.100 TpmC（每分钟可执行事物数量）
 ```
