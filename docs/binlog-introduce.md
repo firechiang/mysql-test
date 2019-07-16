@@ -4,10 +4,10 @@
 # 字段说明：Log_name（文件名），Pos（日志数据开始位置），Event_type（时间类型），Server_id（服务器ID），End_log_pos（日志数据结束位置，Info（简要信息）
 Log_name	        Pos	    Event_type	   Server_id	  End_log_pos	     Info
 mysql_bin_log.000001	4	    Format_desc	      1	            107	             Server ver: 5.5.49-log, Binlog ver: 4
-mysql_bin_log.000001	947	    Query	      1	            1015	       BEGIN
-mysql_bin_log.000001	1015	    Table_map	      1	            1061	       table_id: 33 (test.dept)
-mysql_bin_log.000001	1061	    Write_rows	      1	            1452	       table_id: 33 flags: STMT_END_F
-mysql_bin_log.000001	1452	    Xid	              1	            1479	       COMMIT /* xid=35 */
+mysql_bin_log.000001	947	    Query	      1	            1015	     BEGIN
+mysql_bin_log.000001	1015	    Table_map	      1	            1061	     table_id: 33 (test.dept)
+mysql_bin_log.000001	1061	    Write_rows	      1	            1452	     table_id: 33 flags: STMT_END_F
+mysql_bin_log.000001	1452	    Xid	              1	            1479	     COMMIT /* xid=35 */
 mysql_bin_log.000001	1479	    Stop	      1	            1498	
 ```
 ##### 1.2 statement格式，优点：日志体积小（因为日志记录的是操作的SQL语句），频繁同步传输速度较快；缺点：不能保证数据同步的安全可靠性（自增主键可能出现不一致，还可能出现错误删除或修改），同步写入时出现行锁概率更高，数据格式如下
