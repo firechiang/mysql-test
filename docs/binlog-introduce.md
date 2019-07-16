@@ -26,7 +26,7 @@ mysql_bin_log.000005	     674	         Xid	                   1	              70
 ```bash
 # 字段说明：Log_name（文件名），Pos（日志数据开始位置），Event_type（时间类型），Server_id（服务器ID），End_log_pos（日志数据结束位置，Info（实际操作的SQL语句）
 Log_name	             Pos	        Event_type	        Server_id	       End_log_pos	       Info
-mysql_bin_log.000006	     4	          Format_desc	            1	              107	             Server ver: 5.5.49-log, Binlog ver: 4
+mysql_bin_log.000006	     4	              Format_desc	            1	              107	             Server ver: 5.5.49-log, Binlog ver: 4
 mysql_bin_log.000006	     107	        Query	                    1	              297	             use `test`; CREATE TABLE `test`.`user`  (`id` int(0) NOT NULL AUTO_INCREMENT,`name` varchar(255) NOT NULL,PRIMARY KEY (`id`))
 mysql_bin_log.000006	     297	        Query	                    1	              365	             BEGIN
 mysql_bin_log.000006	     365	        Intvar	                  1	              393	             INSERT_ID=1
