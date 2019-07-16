@@ -31,7 +31,7 @@ mysql_bin_log.000006	107	    Query	      1	            297	             use `tes
 mysql_bin_log.000006	297	    Query	      1	            365	             BEGIN
 mysql_bin_log.000006	365	    Intvar	      1	            393	             INSERT_ID=1
 mysql_bin_log.000006	393	    Query	      1	            542	             use `test`; insert into user(name) values('dasda'),('dadaasd'),('wdefrf'),('oloiojfs'),('dadaasd')
-mysql_bin_log.000006	542	    Xid	              1	           569	             COMMIT /* xid=27 */
+mysql_bin_log.000006	542	    Xid	              1	            569	             COMMIT /* xid=27 */
 ```
 #### 二、开启 binlog 日志（注意：Windows系统需写在 [mysqld] 配置项下面，Linux系统好像无所谓）
 ```bash
