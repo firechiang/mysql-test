@@ -29,7 +29,7 @@ Log_name	             Pos	        Event_type	        Server_id	       End_log_po
 mysql_bin_log.000006	     4	                Format_desc	            1	              107	             Server ver: 5.5.49-log, Binlog ver: 4
 mysql_bin_log.000006	     107	        Query	                    1	              297	             use `test`; CREATE TABLE `test`.`user`  (`id` int(0) NOT NULL AUTO_INCREMENT,`name` varchar(255) NOT NULL,PRIMARY KEY (`id`))
 mysql_bin_log.000006	     297	        Query	                    1	              365	             BEGIN
-mysql_bin_log.000006	     365	        Intvar	                  1	              393	             INSERT_ID=1
+mysql_bin_log.000006	     365	        Intvar	                    1	              393	             INSERT_ID=1
 mysql_bin_log.000006	     393	        Query	                    1	              542	             use `test`; insert into user(name) values('dasda'),('dadaasd'),('wdefrf'),('oloiojfs'),('dadaasd')
 mysql_bin_log.000006	     542	        Xid	                    1	              569	             COMMIT /* xid=27 */
 ```
