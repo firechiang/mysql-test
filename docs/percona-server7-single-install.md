@@ -44,7 +44,7 @@ $ chkconfig mysqld off                                         # 禁止开机启
 #### 六、修改root账号密码
 ```bash
 $ grep 'temporary password' /var/log/mysqld.log                # 查看mysql默认root账号密码
-$ mysql -uroot -p                                              # 进入MySQL服务
+$ mysql -h127.0.0.1 -P 3306 -uroot -p                          # 进入MySQL服务
 $ ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jiang@123';     # 设置root用户密码为 Jiang@123，且只有本地能登录                 
 $ show databases;                                              # 查看所有库
 $ use mysql;                                                   # 进入MySQL系统库
@@ -59,7 +59,7 @@ $ mysql -uroot -pJiang@123                                     # 登录MySQL可�
 
 #### 七、创建用户
 ```bash
-$ mysql -u root -p                                             # 进入MySQL服务
+$ mysql -h127.0.0.1 -P 3306 -uroot -p                          # 进入MySQL服务
 $ CREATE USER 'admin'@'%' IDENTIFIED BY 'Jiang@123';           # 创建用户admin密码Jiang@123，%是指所有IP都可以连接
 $ GRANT all privileges ON *.* TO 'admin'@'%';                  # 将所有权限都赋给admin账号
 $ flush privileges;                                            # 刷新权限
