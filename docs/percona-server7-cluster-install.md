@@ -44,8 +44,6 @@ socket=/var/lib/mysql/mysql.sock
 log-error=/var/log/mysqld.log
 # 进程ID所在目录
 pid-file=/var/run/mysqld/mysqld.pid
-# 开启bin-log日志
-log-bin
 # 开启同步数据的更新记录到bin-log（开启同步更新记录）
 log_slave_updates
 # 保留指定天数范围内的bin-log历史日志
@@ -80,6 +78,8 @@ wsrep_sst_method=xtrabackup-v2
 wsrep_sst_auth=admin:Jiang@123
 # 同步数据使用严格模式，不允许不一致问题
 pxc_strict_mode=ENFORCING
+# 开启bin-log以及bin-log日志名称是mysql_bin_log（名称可以随便写，也可以加目录）
+log-bin=mysql_bin_log
 # binlog日志格式，基于ROW复制，安全可靠
 binlog_format=ROW
 # 默认引擎，其它引擎无效
