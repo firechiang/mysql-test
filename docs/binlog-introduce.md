@@ -5,7 +5,7 @@
 Log_name	        Pos	    Event_type	   Server_id	  End_log_pos	     Info
 mysql_bin_log.000001	4	    Format_desc	      1	            107	         Server ver: 5.5.49-log, Binlog ver: 4
 mysql_bin_log.000001	947	    Query	            1	            1015	       BEGIN
-mysql_bin_log.000001	1015	    Table_map	     1	            1061	       table_id: 33 (test.dept)
+mysql_bin_log.000001	1015	    Table_map	      1	            1061	       table_id: 33 (test.dept)
 mysql_bin_log.000001	1061	    Write_rows	      1	            1452	       table_id: 33 flags: STMT_END_F
 mysql_bin_log.000001	1452	    Xid	              1	            1479	       COMMIT /* xid=35 */
 mysql_bin_log.000001	1479	    Stop	            1	            1498	
