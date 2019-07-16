@@ -3,7 +3,7 @@
 ```bash
 # 字段说明：Log_name（文件名），Pos（日志数据开始位置），Event_type（时间类型），Server_id（服务器ID），End_log_pos（日志数据结束位置，Info（简要信息）
 Log_name	        Pos	    Event_type	   Server_id	  End_log_pos	     Info
-mysql_bin_log.000001	4	    Format_desc	      1	            107	         Server ver: 5.5.49-log, Binlog ver: 4
+mysql_bin_log.000001	4	    Format_desc	      1	            107	           Server ver: 5.5.49-log, Binlog ver: 4
 mysql_bin_log.000001	947	    Query	      1	            1015	       BEGIN
 mysql_bin_log.000001	1015	    Table_map	      1	            1061	       table_id: 33 (test.dept)
 mysql_bin_log.000001	1061	    Write_rows	      1	            1452	       table_id: 33 flags: STMT_END_F
