@@ -25,7 +25,7 @@ mysql_bin_log.000005	674	    Xid	              1	             701	     COMMIT /*
 ##### 1.3 mixed格式，它是row格式和statement格式的结合体，以达到性能最大化，推荐生产使用（注意：Percona Server不支持），mixed格式储存规则：如果是会出现数据不一致情况的操作（比如使用UUID的函数插入数据，因为UUID函数在每台机器上执行的结果是不一致的，就会采用row格式存储日志，普通操作采用statement格式存储日志（就是直接存储SQl语句））
 ```bash
 # 字段说明：Log_name（文件名），Pos（日志数据开始位置），Event_type（时间类型），Server_id（服务器ID），End_log_pos（日志数据结束位置），Info（实际操作的SQL语句）
-Log_name	        Pos	    Event_type	   Server_id	 End_log_pos	       Info
+Log_name	        Pos	    Event_type	   Server_id	 End_log_pos	     Info
 mysql_bin_log.000006	4	    Format_desc	      1	            107	             Server ver: 5.5.49-log, Binlog ver: 4
 mysql_bin_log.000006	107	    Query	      1	            297	             use `test`; CREATE TABLE `test`.`user`  (`id` int(0) NOT NULL AUTO_INCREMENT,`name` varchar(255) NOT NULL,PRIMARY KEY (`id`))
 mysql_bin_log.000006	297	    Query	      1	            365	             BEGIN
