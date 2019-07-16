@@ -38,15 +38,15 @@ $ sysbench /usr/local/share/sysbench/tests/include/oltp_legacy/oltp.lua --mysql-
 [ 30s ] thds: 10 tps: 107.90 qps: 2161.39 (r/w/o: 1513.46/431.92/216.01) lat (ms,95%): 173.58 err/s: 0.20 reconn/s: 0.00
 # 最终的测试结果
 SQL statistics:
-    queries performed（执行测试的次数）:
-        read:                            44604
-        write:                           12739
-        other:                           6370
-        total:                           63713
-    transactions:                        3184   (105.93 per sec.)
-    queries:                             63713  (2119.79 per sec.)
-    ignored errors:                      2      (0.07 per sec.)
-    reconnects:                          0      (0.00 per sec.)
+    queries performed（执行测试操作次数）:
+        read:                            44604                      # 执行读取操作次数
+        write:                           12739                      # 执行写入操作次数
+        other:                           6370                       # 执行其它操作次数
+        total:                           63713                      # 总共执行操作次数（44604 + 12739 + 6370 = 63713）
+    transactions:                        3184   (105.93 per sec.)   # TPS（每秒可执行完成105.93次事物操作）
+    queries:                             63713  (2119.79 per sec.)  # QPS（每秒可执行完成2119.79次增删改查操作）
+    ignored errors:                      2      (0.07 per sec.)     # 忽略错误的数量（每秒出现了0.07次错误）
+    reconnects:                          0      (0.00 per sec.)     # 重新连接的次数（每秒出现了0次重新连接数据库）
 
 General statistics:
     total time:                          30.0550s
@@ -63,4 +63,6 @@ Threads fairness:
     events (avg/stddev):           318.4000/1.36
     execution time (avg/stddev):   30.0291/0.02
 
+# 删除测试数据 oltp-tables-count（删除测试表数量），cleanup（删除数据）
+$ sysbench /usr/local/share/sysbench/tests/include/oltp_legacy/oltp.lua --mysql-host=192.168.0.120 --mysql-port=3306 --mysql-user=root --mysql-password=jiang --oltp-tables-count=10 cleanup
 ```
