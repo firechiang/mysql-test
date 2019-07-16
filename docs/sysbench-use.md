@@ -22,7 +22,7 @@ $ ./autogen.sh && ./configure && make -j && make install # 安装（注意：默
 $ sysbench --help                                        # 查看使用帮助
 $ sysbench --version                                     # 查看 Sysbench 版本
 
-# 生成测试数据 oltp-tables-count（自动生成测试表数量），oltp-table-size（每张表数据插入数量），prepare（生成测试数据）
+# 生成测试数据 oltp-tables-count（自动生成测试表数量，生成测试建议不低于10），oltp-table-size（每张表数据插入数量，生产测试建议不低于500W，SSD>=10000W），prepare（生成测试数据）
 $ sysbench /usr/local/share/sysbench/tests/include/oltp_legacy/oltp.lua --mysql-host=192.168.0.120 --mysql-port=3306 --mysql-user=root --mysql-password=jiang --oltp-tables-count=10 --oltp-table-size=100000 prepare
 
 # 测试读写性能，参数说明如下
