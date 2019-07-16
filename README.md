@@ -1,4 +1,4 @@
-#### 一、[binlog 日志简介][10]
+#### 一、[binlog 日志说明][10]
 #### 二、[Centos Oracle-MySQL-8.0单节点搭建][1]（不推荐使用）
 #### 三、[Centos Percona-Server-5.7.26单节点搭建][3]（推荐生产使用）
 #### 四、[Centos Percona-Server-5.7.26镜像集群搭建][4]（推荐生产使用）
