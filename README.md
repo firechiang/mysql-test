@@ -83,6 +83,11 @@ $ flush privileges;                                            # 刷新权限
 ```bash
 $ service mysqld restart                                       # 重启服务
 ```
+#### 十八、SQL优化
+```bash
+1，select * from user limit 1000000,10;可优化成：select a.* from user a join(select * from user limit 1000000,10) b on(a.id = b.id);
+```
+
 [1]: https://github.com/firechiang/mysql-test/blob/master/docs/setup-single-install.md
 [2]: https://github.com/firechiang/mysql-test/blob/master/docs/explain-explain.md
 [3]: https://github.com/firechiang/mysql-test/blob/master/docs/percona-server7-single-install.md
