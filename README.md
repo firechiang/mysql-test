@@ -45,16 +45,32 @@ $ mysqldump -uroot -p test  person --where="id=1" > /home/tools/4.txt
 $ mysql -h127.0.0.1 -uroot -p -N -e"select * from person" test > /home/tools/1.txt
 ```
 
-#### 十六、找回root账号密码
-##### 16.1 修改[vi /etc/my.cnf]添加如下配置
+#### 十六、数据查询导入（注意：如果文件太大，在Linux系统下可以使用 split 命令切分文件）
+```bash
+$ mysql -h127.0.0.1 -P 3306 -uroot -p                          # 进入MySQL
+
+# 导入 sql 文件数据（注意：这个方案比较慢，原因是sql是一条一条执行的）
+$ source /home/tools/4.sql
+
+# 导入数据文件（注意：这种方式导入速度快）
+# fields terminated by（字段以什么分割）
+# optionally enclosed by（以什么符号括住CHAR、VARCHAR和TEXT等字符型字段）
+# lines terminated by（以什么换行）
+# fields escaped by（设置转义字符，默认值为反斜线 \）
+# ignore lines（可以忽略前n行）
+$ load data infile "/data/mysql/user.sql" into table user fields terminated by ',' optionally enclosed by '"' lines terminated by '\n';
+```
+
+#### 十七、找回root账号密码
+##### 17.1 修改[vi /etc/my.cnf]添加如下配置
 ```bash
 skip-grant-tables                                              # 跳过用户名密码验证
 ```
-##### 16.2 重启mysql服务
+##### 17.2 重启mysql服务
 ```bash
 $ service mysqld restart                                       # 重启服务
 ```
-##### 16.3 修改root密码
+##### 17.3 修改root密码
 ```bash
 $ mysql                                                        # 进入MySQL服务
 $ use mysql;                                                   # 进入MySQL系统库
@@ -62,8 +78,8 @@ $ use mysql;                                                   # 进入MySQL系�
 $ update user set password = password('Jiang@123') where user = 'root';
 $ flush privileges;                                            # 刷新权限
 ```
-##### 16.4 删除[vi /etc/my.cnf]配置文件里面的 skip-grant-tables（跳过用户名密码验证）
-##### 16.5 重启mysql服务
+##### 17.4 删除[vi /etc/my.cnf]配置文件里面的 skip-grant-tables（跳过用户名密码验证）
+##### 17.5 重启mysql服务
 ```bash
 $ service mysqld restart                                       # 重启服务
 ```

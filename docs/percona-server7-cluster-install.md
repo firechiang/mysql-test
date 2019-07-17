@@ -54,6 +54,13 @@ character_set_server=utf8
 bind-address=0.0.0.0
 # 跳过DNS解析
 skip-name-resolve
+# 0（log buffer将每秒一次地写入log file中，并且log file的flush(刷到磁盘)操作同时进行.该模式下，在事务提交的时候，不会主动触发写入磁盘的操作）
+# 1（每次事务提交时MySQL都会把log buffer的数据写入log file，并且flush(刷到磁盘)中去）
+# 2（每次事务提交时MySQL都会把log buffer的数据写入log file.但是flush(刷到磁盘)操作并不会同时进行。该模式下,MySQL会每秒执行一次 flush(刷到磁盘)操作）
+# 建议设置成0或2
+#innodb_flush_log_at_trx_commit=2
+# binlog缓存大小，如果单机只有MySQL的话，建议设置成机器内存的50%-70%
+#innodb_buffer_pool_size=200M
 
 # 建议禁用符号链接以防止各种安全风险
 symbolic-links=0
