@@ -1,8 +1,8 @@
 #### 一、[binlog 日志说明][10]
 #### 二、[Centos Oracle-MySQL-8.0单节点搭建][1]（不推荐使用）
 #### 三、[Centos Percona-Server-5.7.26单节点搭建][3]（推荐生产使用）
-#### 四、[Centos Percona-Server-5.7.26镜像集群搭建][4]（推荐生产使用）
-#### 五、[Centos Percona-Server-5.7.26集群数据同步流程以及普通MySQL集群数据同步简要说明][11]
+#### 四、[Centos Percona-Server-5.7.26镜像全量强一致性集群搭建][4]（推荐生产使用）
+#### 五、[Centos Percona-Server-5.7.26集群强一致性数据同步流程以及普通MySQL集群弱一致性数据同步简要说明][11]
 #### 六、[MyCat 主键取模分片搭建][5]
 #### 七、[MyCat 根据某个字段的值分片搭建][6]（推荐生产使用）
 #### 八、[MyCat 父子表（某一条数据在哪个分片，其关联数据就在哪个分片）简单使用][7]
@@ -83,7 +83,7 @@ $ flush privileges;                                            # 刷新权限
 ```bash
 $ service mysqld restart                                       # 重启服务
 ```
-#### 十八、SQL优化
+#### 十八、SQL优化（注意：insert 语句后面加 IGNORE 关键字，如果插入数据违反了唯一约束（比如主键或唯一索引），不会报错，会返回受影响行数  0，建议生产使用，比如要查询用户手机是否存在，我直接插入数据就行了，返回0就说明用户手机已存在。插入语句示例：insert ignore into user(name)values(?)）
 ```bash
 1，select * from user limit 1000000,10;可优化成：select a.* from user a join(select * from user limit 1000000,10) b on(a.id = b.id);
 ```
