@@ -167,7 +167,7 @@ $ show status like '%wsrep%';                                  # 查看集群相
 | wsrep_local_state_uuid           | 0fb0-a5d-11e9-a12c-949  |
 | wsrep_protocol_version           | 9                       |
 | wsrep_last_applied               | 6                       | # 同步应用次数（创建表，库，视图等等）
-| wsrep_last_committed             | 6                       | # 事务提交次数
+| wsrep_last_committed             | 6                       | # 最后提交的事物ID（注意：这个ID是自增的，所以也可以看作是事务的提交次数）
 | wsrep_replicated                 | 5                       | # 向其它节点发送同步数据总次数
 | wsrep_replicated_bytes           | 1176                    | # 向其它节点发送同步数据总大小
 | wsrep_repl_keys                  | 6                       |
