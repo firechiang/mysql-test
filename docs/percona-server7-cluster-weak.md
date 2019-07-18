@@ -116,7 +116,7 @@ $ chkconfig mysqld off                                         # 禁止开机启
 #### 九、修改root账号密码和创建数据同步账号admin（注意：集群每个节点都要修改）
 ```bash
 $ grep 'temporary password' /var/log/mysqld.log                # 查看mysql默认root账号密码
-$ mysql -h127.0.0.1 -P 3306 -uroot -p                          # 进入MySQL服务
+$ mysql -uroot -p                                              # 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
 $ ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jiang@123';     # 设置root用户密码为 Jiang@123，且只有本地能登录                 
 $ use mysql;                                                   # 进入MySQL系统库
 $ update user set host = '%' where user = 'root';              # 修改root用户允许所有IP访问（注意：修改看实际情况而定）
@@ -131,6 +131,6 @@ $ flush privileges;                                            # 刷新权限
 $ ps-admin --enable -uroot -p                                  # 安装TokuDB引擎（注意：它会提示你输入密码）
 $ service mysql restart                                        # 重启MySQL服务
 $ ps-admin --enable -uroot -p                                  # 激活TokuDB引擎（注意：它会提示你输入密码）
-$ mysql -h127.0.0.1 -P 3306 -uroot -p                          # 进入MySQL服务
+$ mysql -uroot -p                                              # 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
 $ show engines;                                                # 查看数据所有引擎（注意：看看有没有TokuDB引擎）
 ```

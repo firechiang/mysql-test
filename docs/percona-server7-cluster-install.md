@@ -131,7 +131,7 @@ $ chkconfig mysqld off                                         # 禁止开机启
 #### 九、修改root账号密码和创建数据同步账号admin（注意：在集群引导节点上执行，因为如果集群引导节点上没有admin账号，其它节点将无法加入集群）
 ```bash
 $ grep 'temporary password' /var/log/mysqld.log                # 查看mysql默认root账号密码
-$ mysql -h127.0.0.1 -P 3306 -uroot -p                          # 进入MySQL服务
+$ mysql -uroot -p                                              # 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
 $ ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jiang@123';     # 设置root用户密码为 Jiang@123，且只有本地能登录                 
 $ use mysql;                                                   # 进入MySQL系统库
 $ update user set host = '%' where user = 'root';              # 修改root用户允许所有IP访问（注意：修改看实际情况而定）
@@ -152,7 +152,7 @@ $ chkconfig mysqld off                                         # 禁止开机启
 
 #### 十一、集群相关操作和说明
 ```bash
-$ mysql -h127.0.0.1 -P 3306 -uroot -p                          # 进入MySQL服务
+$ mysql -uroot -p                                              # 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
 $ show status like 'wsrep_cluster%';                           # 查看集群和当前节点的状态信息
 +--------------------------+---------------------------------+
 | Variable_name            | Value                           |
