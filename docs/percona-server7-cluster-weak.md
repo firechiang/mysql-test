@@ -113,16 +113,17 @@ $ chkconfig mysqld on                                          # 开启开机启
 $ chkconfig mysqld off                                         # 禁止开机启动
 ```
 
-#### 九、修改root账号密码和创建数据同步账号admin（注意：集群每个节点都要修改）
+#### 九、修改root账号密码和创建数据同步账号backup（注意：集群每个节点都要修改）
 ```bash
 $ grep 'temporary password' /var/log/mysqld.log                # 查看mysql默认root账号密码
 $ mysql -uroot -p                                              # 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
 $ ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jiang@123';     # 设置root用户密码为 Jiang@123，且只有本地能登录                 
 $ use mysql;                                                   # 进入MySQL系统库
 $ update user set host = '%' where user = 'root';              # 修改root用户允许所有IP访问（注意：修改看实际情况而定）
-# 创建数据同步账号admin（注意：我们在配置文件里面配的就是这个账号）
-$ CREATE USER 'admin'@'%' IDENTIFIED BY 'Jiang@123';           # 创建用户admin密码Jiang@123，%是指所有IP都可以连接
-$ GRANT all privileges ON *.* TO 'admin'@'%';                  # 将所有权限都赋给admin账号
+
+# 创建数据同步账号backup（注意：我们在配置文件里面配的就是这个账号）
+$ CREATE USER 'backup'@'%' IDENTIFIED BY 'Jiang@123';          # 创建用户backup密码Jiang@123，%是指所有IP都可以连接
+$ GRANT super,reload,replication slave ON *.* TO 'backup'@'%'; # 将数据读取权限都赋给backup账号
 $ flush privileges;                                            # 刷新权限
 ```
 

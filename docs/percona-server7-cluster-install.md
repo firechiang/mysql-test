@@ -135,6 +135,7 @@ $ mysql -uroot -p                                              # 进入MySQL服�
 $ ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jiang@123';     # 设置root用户密码为 Jiang@123，且只有本地能登录                 
 $ use mysql;                                                   # 进入MySQL系统库
 $ update user set host = '%' where user = 'root';              # 修改root用户允许所有IP访问（注意：修改看实际情况而定）
+
 # 创建数据同步账号admin（注意：我们在配置文件里面配的就是这个账号）
 $ CREATE USER 'admin'@'%' IDENTIFIED BY 'Jiang@123';           # 创建用户admin密码Jiang@123，%是指所有IP都可以连接
 $ GRANT all privileges ON *.* TO 'admin'@'%';                  # 将所有权限都赋给admin账号
