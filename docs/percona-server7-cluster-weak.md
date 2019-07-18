@@ -61,6 +61,9 @@ pid-file=/var/run/mysqld/mysqld.pid
 # 开启bin_log以及bin_log日志名称是mysql_bin_log（名称可以随便写，也可以加目录）
 log_bin=mysql_bin_log
 
+# 开启接收bin_log，因为我们是双向同步（就是当前节点既是主节点又是从节点）
+relay_log=mysql_relay_log
+
 # binlog日志格式，基于ROW复制，安全可靠
 binlog_format=ROW
 
