@@ -40,6 +40,15 @@ $ yum localinstall *.rpm                                            # 安装所�
 datadir=/var/lib/mysql
 socket=/var/lib/mysql/mysql.sock
 
+# 字符集
+character_set_server=utf8
+
+# 绑定主机
+bind-address=0.0.0.0
+
+# 跳过DNS解析
+skip-name-resolve
+
 # # 建议禁用符号链接以防止各种安全风险
 symbolic-links=0
 
@@ -55,6 +64,18 @@ log_bin=mysql_bin_log
 # binlog日志格式，基于ROW复制，安全可靠
 binlog_format=ROW
 
+# 开启同步数据的更新记录到bin-log（开启同步更新记录）
+log_slave_updates
+
+# 保留指定天数范围内的bin-log历史日志
+expire_logs_days=7
+
+# 默认引擎
+default_storage_engine=InnoDB
+
+# 主键自增不锁表
+innodb_autoinc_lock_mode=2
+
 # MySQL缓存大小（专用MySQL服务器建议配置为机器总内存的70%，如果不是专用的建议配置为机器总内存的10%）
 #innodb_buffer_pool_size = 128M
 
@@ -64,6 +85,10 @@ binlog_format=ROW
 # join_buffer_size = 128M
 # sort_buffer_size = 2M
 # read_rnd_buffer_size = 2M
+
+# 集权相关配置
+# 集群节点唯一标识（注意：集群中不能重复，必须是数字）
+server-id=1
 
 [mysqld_safe]
 pid-file=/var/run/mysqld/mysqld.pid
