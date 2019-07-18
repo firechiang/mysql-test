@@ -67,8 +67,8 @@ log_bin=mysql_bin_log
 # 开启接收bin_log，因为我们是双向同步（就是当前节点既是主节点又是从节点）
 relay_log=mysql_relay_log
 
-# binlog日志格式，基于ROW复制，安全可靠
-binlog_format=ROW
+# binlog日志格式，基于mixed复制，安全可靠效率高
+binlog_format=mixed
 
 # 开启同步数据的更新记录到bin-log（开启同步更新记录）
 log_slave_updates
@@ -136,4 +136,22 @@ $ service mysql restart                                        # 重启MySQL服�
 $ ps-admin --enable -uroot -p                                  # 激活TokuDB引擎（注意：它会提示你输入密码）
 $ mysql -uroot -p                                              # 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
 $ show engines;                                                # 查看数据所有引擎（注意：看看有没有TokuDB引擎）
+```
+
+#### 十一、配置主从同步（注意：每个节点都要配置，因为我们是双向同步（当前节点既是主节点也是从节点））
+```bash
+# 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
+$ mysql -uroot -p                                              
+
+# 停止主从同步服务
+$ stop slave;                                                  
+
+# 配置要同步哪个节点的数据
+$ change master to master_host='server007',master_port=3306,master_user='backup',master_password='Jiang@123';
+
+# 开启主从同步服务
+$ start slave;
+
+# 查看主从同步状态信息（看看我们上面配置的主从同步是否成功）
+$ show slave status;
 ```
