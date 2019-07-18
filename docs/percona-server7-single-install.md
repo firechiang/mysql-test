@@ -29,7 +29,7 @@ skip-name-resolve
 # 2（每次事务提交时MySQL都会把log buffer的数据写入log file.但是flush(刷到磁盘)操作并不会同时进行。该模式下,MySQL会每秒执行一次 flush(刷到磁盘)操作）
 # 建议设置成0或2
 #innodb_flush_log_at_trx_commit=2
-# binlog缓存大小，如果单机只有MySQL的话，建议设置成机器内存的50%-70%
+# MySQL缓存大小（专用MySQL服务器建议配置为机器总内存的70%，如果不是专用的建议配置为机器总内存的10%）
 #innodb_buffer_pool_size=200M
 ```
 
