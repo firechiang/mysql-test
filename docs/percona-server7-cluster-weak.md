@@ -36,6 +36,9 @@ $ yum localinstall *.rpm                                            # 安装所�
 #### 六、修改[vi /etc/my.cnf]配置（注意：先将原有的配置都删除掉，集群每个节点都要修改。还有server-id和wsrep_node_name以及wsrep_node_address每个节点需不一样）。以下配置信息其实是从 /etc/percona-server.conf.d/ 目录下的 mysqld.cnf（基础配置） 和 mysqld_safe.cnf（安全配置） 文件里面复制过来的
 ```bash
 [mysqld]
+# 集群节点唯一标识（注意：集群中不能重复，必须是数字）
+server-id=1
+
 # 数据目录
 datadir=/var/lib/mysql
 socket=/var/lib/mysql/mysql.sock
@@ -88,10 +91,6 @@ innodb_autoinc_lock_mode=2
 # join_buffer_size = 128M
 # sort_buffer_size = 2M
 # read_rnd_buffer_size = 2M
-
-# 集权相关配置
-# 集群节点唯一标识（注意：集群中不能重复，必须是数字）
-server-id=1
 
 [mysqld_safe]
 pid-file=/var/run/mysqld/mysqld.pid
