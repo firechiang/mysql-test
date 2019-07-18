@@ -105,4 +105,4 @@ $ service mysqld restart                                       # 重启服务
 [9]: https://github.com/firechiang/mysql-test/blob/master/docs/tpcc-mysql-use.md
 [10]: https://github.com/firechiang/mysql-test/blob/master/docs/binlog-introduce.md
 [11]: https://github.com/firechiang/mysql-test/blob/master/docs/pxc-sync.md
-[12]: https://github.com/firechiang/mysql-test/blob/master/docs/pxc-sync.md
+[12]: https://github.com/firechiang/mysql-test/blob/master/docs/percona-server7-cluster-weak.md
