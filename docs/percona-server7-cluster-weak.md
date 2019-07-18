@@ -81,9 +81,9 @@ $ firewall-cmd --reload                                        # 刷新配置
 
 #### 八、启动服务
 ```bash
-$ service mysqld start                                         # 启动服务
-$ service mysqld restart                                       # 重启服务
-$ service mysqld stop                                          # 停止服务
+$ service mysql start                                          # 启动服务
+$ service mysql restart                                        # 重启服务
+$ service mysql stop                                           # 停止服务
 $ chkconfig mysqld on                                          # 开启开机启动
 $ chkconfig mysqld off                                         # 禁止开机启动
 ```
