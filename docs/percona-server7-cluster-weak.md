@@ -76,6 +76,24 @@ log_slave_updates
 # bin-log日志n天后自动删除，0表示不删除（生产建议配置成0）
 expire_logs_days=0
 
+# 不允许从节点同步哪些数据库，生产建议不要同步MySQL自带的库，可能会出现错误（注意：这个其实就是主节点不记录哪些数据库的bin-log日志，如果要配置多个，配置多个配置项即可，如下所示）
+binlog_ignore_db=mysql
+binlog_ignore_db=sys
+binlog_ignore_db=performance_schema
+binlog_ignore_db=information_schema
+
+# 只允许从节点同步哪些数据库（注意：这个其实就是主节点只记录哪些数据库的bin-log日志，如果要配置多个，配置多个配置项即可，如下所示）
+#binlog_do_db=test_user1
+#binlog_do_db=test_user2
+
+# 从节点只同步主节点哪些数据库（注意：如果要配置多个，配置多个配置项即可，如下所示）
+#replicate-do-db=test_user1
+#replicate-do-db=test_user2
+
+# 从节点不同步主节点哪些数据库（注意：如果要配置多个，配置多个配置项即可，如下所示）
+#replicate-ignore-db=test_user3
+#replicate-ignore-db=test_user4
+
 # 默认引擎
 default_storage_engine=InnoDB
 
