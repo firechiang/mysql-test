@@ -44,7 +44,7 @@ datadir=/var/lib/mysql
 socket=/var/lib/mysql/mysql.sock
 
 # 字符集
-character_set_server=utf8
+character_set_server=utf8mb4
 
 # 绑定主机
 bind-address=0.0.0.0
