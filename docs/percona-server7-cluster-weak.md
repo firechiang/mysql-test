@@ -1,7 +1,7 @@
 #### 一、环境准备（注意：集群每个节点都要修改，如果不使用TokuDB引擎，可以不开启如下操作）
 ```bash
-echo never > /sys/kernel/mm/transparent_hugepage/enabled  # 开启 Linux 大热内存管理，动态分配内存
-echo never > /sys/kernel/mm/transparent_hugepage/defrag   # 开启 Linux 内存碎片整理
+$ echo never > /sys/kernel/mm/transparent_hugepage/enabled  # 开启 Linux 大热内存管理，动态分配内存
+$ echo never > /sys/kernel/mm/transparent_hugepage/defrag   # 开启 Linux 内存碎片整理
 ```
 
 #### 二、修改[vi /etc/selinux/config]关闭SELinux安全验证（注意：集群每个节点都要修改，需要重启机器才能生效）
