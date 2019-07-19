@@ -73,8 +73,8 @@ binlog_format=mixed
 # 开启同步数据的更新记录到bin-log（开启同步更新记录）
 log_slave_updates
 
-# 保留指定天数范围内的bin-log历史日志
-expire_logs_days=7
+# bin-log日志n天后自动删除，0表示不删除（生产建议配置成0）
+expire_logs_days=0
 
 # 默认引擎
 default_storage_engine=InnoDB
@@ -95,6 +95,7 @@ innodb_autoinc_lock_mode=2
 [mysqld_safe]
 pid-file=/var/run/mysqld/mysqld.pid
 socket=/var/run/mysqld/mysqld.sock
+# 指定服务的运行级别
 nice=0
 # 指定内存锁片整理所使用的依赖库(注意：这个库是我们在上面已经安装的jemalloc内存碎片整理库)
 malloc-lib=/usr/lib64/libjemalloc.so.1

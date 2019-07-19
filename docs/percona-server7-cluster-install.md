@@ -46,8 +46,8 @@ log-error=/var/log/mysqld.log
 pid-file=/var/run/mysqld/mysqld.pid
 # 开启同步数据的更新记录到bin-log（开启同步更新记录）
 log_slave_updates
-# 保留指定天数范围内的bin-log历史日志
-expire_logs_days=7
+# # bin-log日志n天后自动删除，0表示不删除（生产建议配置成0）
+expire_logs_days=0
 # 配置字符集
 character_set_server=utf8
 # 绑定
