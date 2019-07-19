@@ -12,22 +12,22 @@
 #### 十二、[Explain执行计划说明][2]
 #### 十三、常用操作简单使用
 ```bash
-truncate table 表名;                                                                    # 清空整张表数据
+truncate table 表名;                                                             # 清空整张表数据
 
-set global max_allowed_packet = 1024*1024;                                              # 加大mysq批量插入的数量
+set global max_allowed_packet = 1024*1024;                                       # 加大mysq批量插入的数量
 ```
 
 #### 十四、批量修改
 ```bash
-insert into table (aa,bb,cc) values(xx,xx,xx),(oo,oo,oo) on duplicate key update        # 遇见相同的key修改，没有插入
+insert into table (aa,bb,cc) values(xx,xx,xx),(oo,oo,oo) on duplicate key update # 遇见相同的key修改，没有插入
 
-replace into table (aa,bb,cc) values(xxx,xxx,xxx),(ooo,ooo,ooo),(ccc,ccc,ccc)           # 遇见相同的key修改，没有不操作
+replace into table (aa,bb,cc) values(xxx,xxx,xxx),(ooo,ooo,ooo),(ccc,ccc,ccc)    # 遇见相同的key修改，没有不操作
 ```
 
 
 #### 十五、查询元数据信息
 ```bash
-SELECT * FROM information_schema.columns WHERE column_name='job_name';                  # 查询所有表包含 job_name 列名
+SELECT * FROM information_schema.columns WHERE column_name='job_name';           # 查询所有表包含 job_name 列名
 
 
 SELECT 
