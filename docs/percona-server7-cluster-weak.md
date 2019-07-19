@@ -220,3 +220,30 @@ $ start slave;
 # 查看主从同步状态信息（看看我们上面配置的主从同步是否成功）
 $ show slave status;
 ```
+
+#### 十二、从节点遇到问题数据，停止了同步，解决方案如下（注意：以下命令只适用于开启GTID的同步，且在从节点上执行）
+```bash
+# 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
+$ mysql -uroot -p
+
+# 查看从节点状态，找到 Last_Errno 字段的值
+$ show slave status;
+
+# 1396 就是上面 Last_Errno 字段的值
+$ select * from performance_schema.replication_applier_status_by_worker where LAST_ERROR_NUMBER=1396;
+
+# 停止所有的同步管道（停止指定的同步管道：stop slave for channel 'server007'）
+$ stop slave;
+# 设置遇到错误的那个GTID（注意：这个GTID就是上面那个SQL查出来）
+$ set @@session.gtid_next='f3112c52-77ad-11e9-8314-000c29731e3c:1';
+
+# 生成一个空事物的GTID
+$ begin;
+$ commit;
+
+# 开启自动寻找下一个GTID
+$ set @@session.gtid_next=automatic;
+
+# 启动所有的同步管道（启动指定的同步管道：start slave for channel 'server007'）
+$ start slave;
+```
