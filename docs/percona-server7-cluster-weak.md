@@ -134,7 +134,7 @@ $ chkconfig mysqld on                                          # 开启开机启
 $ chkconfig mysqld off                                         # 禁止开机启动
 ```
 
-#### 九、修改root账号密码和创建数据同步账号backup（注意：集群每个节点都要修改）
+#### 九、修改root账号密码和创建数据同步账号backup（注意：集群每个节点都要修改，因为我们是双向同步（既是主也是从））
 ```bash
 $ grep 'temporary password' /var/log/mysqld.log                # 查看mysql默认root账号密码
 $ mysql -uroot -p                                              # 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
@@ -165,8 +165,12 @@ $ mysql -uroot -p
 # 停止主从同步服务
 $ stop slave;                                                  
 
-# 配置要同步哪个节点的数据
-$ change master to master_host='server007',master_port=3306,master_user='backup',master_password='Jiang@123';
+# 配置要同步哪个节点的数据（注意：查看主节点的bin-log信息可使用命令：show master status）
+# master_log_file 从主节点的哪个bin-log文件开始同步（注意：这个参数可以不写默认同步全部）
+# master_log_pos  从主节点的那个bin-log文件的哪个位置开始同步（注意：这个参数可以不写默认同步全部）
+# for channel     指定同步通道，名字可以顺便起，建议使用主节点的 hostname命名（注意：如果要同步多个节点的数据，这个名字要唯一）
+#$ change master to master_host='server007',master_port=3306,master_user='backup',master_password='Jiang@123',master_log_file='mysql-bin.000003',master_log_pos=123 for channel 'server006';
+$ change master to master_host='server007',master_port=3306,master_user='backup',master_password='Jiang@123' for channel 'server006';
 
 # 开启主从同步服务
 $ start slave;
