@@ -91,8 +91,10 @@ binlog_ignore_db=information_schema
 #replicate-do-db=test_user2
 
 # 从节点不同步主节点哪些数据库（注意：如果要配置多个，配置多个配置项即可，如下所示）
-#replicate-ignore-db=test_user3
-#replicate-ignore-db=test_user4
+replicate-ignore-db=mysql
+replicate-ignore-db=sys
+replicate-ignore-db=performance_schema
+replicate-ignore-db=information_schema
 
 # 默认引擎
 default_storage_engine=InnoDB
@@ -138,10 +140,10 @@ slave_parallel_type=LOGICAL_CLOCK
 slave_parallel_workers=4
 
 # 主节点信息存储到表里
-#master_info_repository=table
+master_info_repository=table
 
 # 接收的数据信息存储到表里
-#relay_log_info_repository=table
+relay_log_info_repository=table
 
 # 当接收的relay-log损坏了，则重新从master上获取日志，以保证了relay-log的完整性
 relay_log_recovery=1
