@@ -33,7 +33,7 @@ $ tar -xvf Percona-Server-5.7.26-29-r11ad961-el7-x86_64-bundle.tar  # 解压 Per
 $ yum localinstall *.rpm                                            # 安装所有安装包
 ```
 
-#### 六、修改[vi /etc/my.cnf]配置（注意：先将原有的配置都删除掉，集群每个节点都要修改。还有server-id和wsrep_node_name以及wsrep_node_address每个节点需不一样）。以下配置信息其实是从 /etc/percona-server.conf.d/ 目录下的 mysqld.cnf（基础配置） 和 mysqld_safe.cnf（安全配置） 文件里面复制过来的
+#### 六、修改[vi /etc/my.cnf]配置（注意：先将原有的配置都删除掉，集群每个节点都要修改。还有server-id每个节点需要不一样）。以下配置信息其实是从 /etc/percona-server.conf.d/ 目录下的 mysqld.cnf（基础配置） 和 mysqld_safe.cnf（安全配置） 文件里面复制过来的
 ```bash
 [mysqld]
 # 集群节点唯一标识（注意：集群中不能重复，必须是数字）
@@ -172,7 +172,7 @@ $ chkconfig mysqld on                                          # 开启开机启
 $ chkconfig mysqld off                                         # 禁止开机启动
 ```
 
-#### 九、修改root账号密码和创建数据同步账号backup（注意：集群每个节点都要修改，因为我们是双向同步（既是主也是从），还有不要将root用户修改为所有IP访问都可以访问，因为我们初始化MySQL密码的SQL语句（ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jiang@123'）会同步到从节点，如果从节点的root账号是所有IP都可以访问的，那么这条SQL将无法执行，从节点将停止同步数据）
+#### 九、修改root账号密码和创建数据同步账号backup（注意：集群每个节点都要修改，因为我们是双向同步（既是主也是从），还有不要将root用户修改为所有IP都可以访问，因为我们初始化MySQL密码的SQL语句（ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jiang@123'）会同步到从节点，如果从节点的root账号是所有IP都可以访问的，那么这条SQL将无法执行，从节点将停止同步数据）
 ```bash
 $ grep 'temporary password' /var/log/mysqld.log                # 查看mysql默认root账号密码
 $ mysql -uroot -p                                              # 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
