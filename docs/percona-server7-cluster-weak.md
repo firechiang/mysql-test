@@ -52,7 +52,7 @@ bind-address=0.0.0.0
 # 跳过DNS解析
 skip-name-resolve
 
-# # 建议禁用符号链接以防止各种安全风险
+# 建议禁用符号链接以防止各种安全风险
 symbolic-links=0
 
 # 日志目录
@@ -109,6 +109,42 @@ innodb_autoinc_lock_mode=2
 # join_buffer_size = 128M
 # sort_buffer_size = 2M
 # read_rnd_buffer_size = 2M
+
+########################################### GTID ##########################################################
+# 开启GTID模式同步
+# off            不产生GTID，Slave只接受不带GTID的事务
+# off_permissive 不产生GTID，Slave即接受不带GTID的事务，也接受带GTID的事务
+# on_permissive  产生GTID，Slave即接受不带GTID的事务，也接受带GTID的事务
+# on             产生GTID，Slave只能接受带GTID的事务
+gtid_mode=on
+
+# 开启服务器只允许可以安全使用GTID记录的语句通过
+# OFF  检测是否有GTID不支持的语句和事务
+# Warn 当检测到不支持GTID的语句和事务，返回警告，并在日志中记录
+# ON   当检测到不支持GTID的语句和事务，返回错误
+enforce_gtid_consistency=on
+
+# 每执行n个事务，GTID表进行压缩，默认值为1000个事务
+gtid_executed_compression_period=1000
+
+# 开启MySQL重启后自动寻找GTID
+binlog_gtid_simple_recovery=on
+
+########################################### 基于组的并行复制和多源同步 #########################################
+# 启用基于组的并行复制（解决主从同步延迟问题）
+slave_parallel_type=LOGICAL_CLOCK
+
+# 并行复制的线程数
+slave_parallel_workers=4
+
+# 主节点信息存储到表里
+#master_info_repository=table
+
+# 接收的数据信息存储到表里
+#relay_log_info_repository=table
+
+# 当接收的relay-log损坏了，则重新从master上获取日志，以保证了relay-log的完整性
+relay_log_recovery=1
 
 [mysqld_safe]
 pid-file=/var/run/mysqld/mysqld.pid
