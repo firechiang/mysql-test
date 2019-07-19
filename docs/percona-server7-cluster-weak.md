@@ -91,10 +91,10 @@ binlog_ignore_db=information_schema
 #replicate-do-db=test_user2
 
 # 从节点不同步主节点哪些数据库（注意：如果要配置多个，配置多个配置项即可，如下所示）
-replicate-ignore-db=mysql
-replicate-ignore-db=sys
-replicate-ignore-db=performance_schema
-replicate-ignore-db=information_schema
+#replicate-ignore-db=mysql
+#replicate-ignore-db=sys
+#replicate-ignore-db=performance_schema
+#replicate-ignore-db=information_schema
 
 # 默认引擎
 default_storage_engine=InnoDB
@@ -172,15 +172,14 @@ $ chkconfig mysqld on                                          # 开启开机启
 $ chkconfig mysqld off                                         # 禁止开机启动
 ```
 
-#### 九、修改root账号密码和创建数据同步账号backup（注意：集群每个节点都要修改，因为我们是双向同步（既是主也是从））
+#### 九、修改root账号密码和创建数据同步账号backup（注意：集群每个节点都要修改，因为我们是双向同步（既是主也是从），还有不要将root用户修改为所有IP访问都可以访问，因为我们初始化MySQL密码的SQL语句（ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jiang@123'）会同步到从节点，如果从节点的root账号是所有IP都可以访问的，那么这条SQL将无法执行，从节点将停止同步数据）
 ```bash
 $ grep 'temporary password' /var/log/mysqld.log                # 查看mysql默认root账号密码
 $ mysql -uroot -p                                              # 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
 $ ALTER USER 'root'@'localhost' IDENTIFIED BY 'Jiang@123';     # 设置root用户密码为 Jiang@123，且只有本地能登录                 
-$ use mysql;                                                   # 进入MySQL系统库
-$ update user set host = '%' where user = 'root';              # 修改root用户允许所有IP访问（注意：修改看实际情况而定）
 
 # 创建数据同步账号backup（注意：我们在配置文件里面配的就是这个账号）
+$ use mysql;                                                   # 进入MySQL系统库
 $ CREATE USER 'backup'@'%' IDENTIFIED BY 'Jiang@123';          # 创建用户backup密码Jiang@123，%是指所有IP都可以连接
 $ GRANT super,reload,replication slave ON *.* TO 'backup'@'%'; # 将数据读取权限都赋给backup账号
 $ flush privileges;                                            # 刷新权限
@@ -200,24 +199,25 @@ $ show engines;                                                # 查看数据所
 # 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
 $ mysql -uroot -p                                              
 
-# 停止主从同步服务
+# 停止所有的同步管道（停止指定的同步管道：stop slave for channel 'server007'）
 $ stop slave;                                                  
 
 # 配置要同步哪个节点的数据（注意：查看主节点的bin-log信息可使用命令：show master status）
-# master_host     主节点的主机或IP
-# master_port     主节点的端口
-# master_user     主节点的用户
-# master_password 主节点的用户密码
-# master_log_file 从主节点的哪个bin-log文件开始同步（注意：这个参数可以不写默认同步全部）
-# master_log_pos  从主节点的那个bin-log文件的哪个位置开始同步（注意：这个参数可以不写默认同步全部）
-# for channel     指定同步通道，名字可以顺便起，建议使用主节点的 hostname命名（注意：如果要同步多个节点的数据，这个名字要唯一）
+# master_host           主节点的主机或IP
+# master_port           主节点的端口
+# master_user           主节点的用户
+# master_password       主节点的用户密码
+# master_log_file       从主节点的哪个bin-log文件开始同步（注意：这个参数可以不写默认同步全部，这个参数值可在主节点上执行：show master status 命令得到）
+# master_log_pos        从主节点的那个bin-log文件的哪个位置开始同步（注意：这个参数可以不写默认同步全部，这个参数值可在主节上点执行：show master status 命令得到）
+# master_auto_position  从第n个的提交事务开始同步（注意：使用这个配置要开启GTID，且不能和master_log_file以及master_log_pos一起使用）
+# for channel           指定同步通道，名字可以顺便起，建议使用主节点的 hostname命名（注意：如果要同步多个节点的数据，这个名字要唯一）
 #$ change master to master_host='server007',master_port=3306,master_user='backup',master_password='Jiang@123',master_log_file='mysql-bin.000003',master_log_pos=123 for channel 'server007';
-$ change master to master_host='server007',master_port=3306,master_user='backup',master_password='Jiang@123' for channel 'server007';
+$ change master to master_host='server007',master_port=3306,master_user='backup',master_password='Jiang@123',master_auto_position=1 for channel 'server007';
 
-# 开启主从同步服务
+# 开启所有的同步管道（开启指定的同步管道：start slave for channel 'server007'）
 $ start slave;
 
-# 查看主从同步状态信息（看看我们上面配置的主从同步是否成功）
+# 查看主从同步状态信息（Slave_IO_Running和Slave_SQL_Running同时为Yes说明主从同步正常，配置成功，否则请查看MySQL日志文件哪里出现了错误）
 $ show slave status;
 ```
 
