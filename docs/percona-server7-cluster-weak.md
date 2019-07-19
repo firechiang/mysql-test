@@ -120,7 +120,7 @@ innodb_autoinc_lock_mode=2
 # on             产生GTID，Slave只能接受带GTID的事务
 gtid_mode=on
 
-# 开启服务器只允许可以安全使用GTID记录的语句通过
+# 防止GTID执行不受支持的语句
 # OFF  检测是否有GTID不支持的语句和事务
 # Warn 当检测到不支持GTID的语句和事务，返回警告，并在日志中记录
 # ON   当检测到不支持GTID的语句和事务，返回错误
