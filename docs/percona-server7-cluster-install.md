@@ -83,7 +83,7 @@ wsrep_sst_method=xtrabackup-v2
 #wsrep_slave_threads=8
 # 同步数据时所使用的账号
 wsrep_sst_auth=admin:Jiang@123
-# 同步数据使用严格模式，不允许不一致问题
+# ENFORCING（严格模式，不允许不一致问题），PERMISSIVE（宽容模式，允许PXC节点作任何操作），DISABLED（禁用）
 pxc_strict_mode=ENFORCING
 # 开启bin-log以及bin-log日志名称是mysql_bin_log（名称可以随便写，也可以加目录）
 log-bin=mysql_bin_log
