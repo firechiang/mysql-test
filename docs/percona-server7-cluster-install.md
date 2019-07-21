@@ -49,7 +49,7 @@ log_slave_updates
 # # bin-log日志n天后自动删除，0表示不删除（生产建议配置成0）
 expire_logs_days=0
 # 配置字符集
-character_set_server=utf8mb4
+character_set_server=utf8
 # 绑定
 bind-address=0.0.0.0
 # 跳过DNS解析
