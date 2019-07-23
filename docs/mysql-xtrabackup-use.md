@@ -27,21 +27,21 @@ $ xtrabackup --version                             # 查看XtraBackup版本号�
 #### 四、XtraBackup全量热备份简单使用
 ##### 4.1、XtraBackup全量热备份命令参数，简要说明
 ```bash
-innobackupex          数据热备份
---xtrabackup          开启只备份InnoDB引擎数据表
---include             指定要备份的数据表，多个用逗号隔开（注意：指定要备份的数据表可以写成正则表达式匹配）
---galera-info         开启备份Percona-XtraDB-Cluster节点的状态文件（注意：这个参数仅限于备份Percona-XtraDB-Cluster集群节点）
---defaults-file       MySQL配置文件地址
---encrypt             加密算法（AES128，AES192，AES256（建议生产使用））  
---encrypt-therads     执行加密的线程数
---encrypt-chunk-size  加密线程的缓存大小（默认64K，最大不能超过1M）
---encrypt-key         秘钥字符（一定要是24个字符）
---encryption-key-file 秘钥字符所在的文件地址（注意：和--encrypt-key配置二选一）
---no-timestamp        不创建时间戳目录
---stream=xbstream     使用使用流式压缩 （流式压缩，直接生成压缩文件，只有一次IO（传统是先备份，再压缩，有两次IO），所以效率特别高）
---compress            开启压缩InnoDB数据文件
---compress-threads    执行压缩InnoDB数据文件执行的线程数
---compress-chunk-size 执行压缩InnoDB数据文件线程的缓存大小（默认64K，最大不能超过1M）
+innobackupex               # 数据热备份
+--xtrabackup               # 开启只备份InnoDB引擎数据表
+--include                  # 指定要备份的数据表，多个用逗号隔开（注意：指定要备份的数据表可以写成正则表达式匹配）
+--galera-info              # 开启备份Percona-XtraDB-Cluster节点的状态文件（注意：这个参数仅限于备份Percona-XtraDB-Cluster集群节点）
+--defaults-file            # MySQL配置文件地址
+--encrypt                  # 加密算法（AES128，AES192，AES256（建议生产使用））  
+--encrypt-therads          # 执行加密的线程数
+--encrypt-chunk-size       # 加密线程的缓存大小（默认64K，最大不能超过1M）
+--encrypt-key              # 秘钥字符（一定要是24个字符）
+--encryption-key-file      # 秘钥字符所在的文件地址（注意：和--encrypt-key配置二选一）
+--no-timestamp             # 不创建时间戳目录
+--stream=xbstream          # 使用使用流式压缩 （流式压缩，直接生成压缩文件，只有一次IO（传统是先备份，再压缩，有两次IO），所以效率特别高）
+--compress                 # 开启压缩InnoDB数据文件
+--compress-threads         # 执行压缩InnoDB数据文件执行的线程数
+--compress-chunk-size      # 执行压缩InnoDB数据文件线程的缓存大小（默认64K，最大不能超过1M）
 ```
 ##### 4.2、XtraBackup全量热备份命令innobackupex简单使用
 ```bash
