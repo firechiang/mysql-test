@@ -14,7 +14,11 @@
 ##### 向数据表写入数据，数据文件的体积增大，但是删除数据的时候文件体积不会减少，数据被删除后留下的，被称作碎片
 ##### 注意：数据执行备份之前一定要，先执行碎片整理，以达到压缩文件的效果
 ```bash
-# 为test_user表作数据碎片整理（注意：这个语句是要锁表的，直到碎片整理完成，这条SQL不能记录到Binlog，否则会触发其它节点的数据碎片整理）
-$ alter table test_user engine=InnoDB    
+# 为test_user表作数据碎片整理（注意：这个语句是要锁表的，直到碎片整理完成）
+# 数据碎片整理时，要将Binlog日志关闭（注释掉log-bin和log_slave_updates配置），否则会触发其它节点的数据碎片整理
+$ alter table test_user engine=InnoDB
+
+# 将MySQL数据目录打成压缩包，拷贝到其它节点即可（注意：如果有表分区，表分区数据目录也要压缩备份，导入节点的表分区也要创建好，否则MySQL服务将无法启动）
+$ tar -cvf mysql-data.tar /var/lib/mysql
 ```
 
