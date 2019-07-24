@@ -121,7 +121,7 @@ $ innobackupex --defaults-file=/etc/my.cnf            \
                -> /home/backup-encrypt-table.xbstream
 ```
 
-#### 五、创建[vi /home/xtrabackup-all.sh]一个全量热备份的脚本（注意：最后要给这个脚本赋予权限，否则这个脚本将无法执行，赋权命令：chmod -R 777 /home/xtrabackup-all.sh）
+#### 五、创建[vi /home/xtrabackup-all.sh]一个全量热备份的脚本，[使用Linux Crontab定时任务去执行脚本][1]（注意：脚本要赋予权限，否则脚本将无法执行，赋权命令：chmod -R 777 /home/xtrabackup-all.sh）
 ```bash
 #! /bin/bash
 time=$(date "+%Y-%m-%d %H:%M:%S")
@@ -143,3 +143,20 @@ innobackupex --defaults-file=/etc/my.cnf              \
                --stream=xbstream                      \
                -> /home/xtrabackup-all-res.xbstream
 ```
+
+
+#### 六、XtraBackup全量数据还原（注意：还原数据之前要关闭MySQL，清空数据目录包括表分区的目录）
+```bash
+# 清理备份数据（回滚没有提交的事物，同步已经提交的事物到数据文件）
+# 说明：因为XtraBackup备份数据时不会锁表，所以在备份时可能会有数据正在写入，但还没有提交事物，就被备份出来了。像这样的数据就是要做清理的
+# 清理 /home/backup/2019-07-19_07-45-35 目录里面的备份数据（注意：这个数据是没有经过压缩和加密的且目录一定要是实际备份数据的目录）
+$ innobackupex --apply-log /home/backup/2019-07-19_07-45-35  
+
+# 还原数据（说明：将 /home/backup/2019-07-19_07-45-35 目录里面的备份数据还原到MySQL（--defaults-file=MySQL配置文件））
+$ innobackupex --defaults-file=/etc/my.cnf --copy-back /home/backup/2019-07-19_07-45-35
+
+# 为还原过来的数据分配用户和用户组，如果有表分区目录也要分配用户和用户组（注意：/var/lib/mysql/* 是数据MysQL的数据目录，如果不分配用户和用户组MySQL将无法启动）
+$ chown -R mysql:mysql /var/lib/mysql/*
+```
+
+[1]: https://github.com/firechiang/linux-test/blob/master/docs/linux-crontable-use.md
