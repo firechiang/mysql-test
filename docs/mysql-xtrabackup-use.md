@@ -120,3 +120,26 @@ $ innobackupex --defaults-file=/etc/my.cnf            \
                --stream=xbstream                      \
                -> /home/backup-encrypt-table.xbstream
 ```
+
+#### 五、创建[vi /home/xtrabackup-all.sh]一个全量热备份的脚本（注意：最后要给这个脚本赋予权限，否则这个脚本将无法执行，赋权命令：chmod -R 777 /home/xtrabackup-all.sh）
+```bash
+#! /bin/bash
+time=$(date "+%Y-%m-%d %H:%M:%S")
+echo "执行全量备份时间  ${time}"
+innobackupex --defaults-file=/etc/my.cnf              \
+               --host=localhost                       \
+               --port=3306                            \
+               --user=root                            \
+               --password=Jiang@123                   \
+               --encrypt=AES256                       \
+               --encrypt-therads=10                   \
+               --encrypt-chunk-size=512               \
+               --encrypt-key=1124hdnvh746r8ushdfjnsdh \
+               --compress                             \
+               --compress-threads=10                  \
+               --compress-chunk-size=512              \
+               --include=mysql.proc,mysql.user        \
+               --no-timestamp                         \
+               --stream=xbstream                      \
+               -> /home/xtrabackup-all-res.xbstream
+```
