@@ -39,9 +39,10 @@ innobackupex               # 数据热备份
 --encryption-key-file      # 秘钥字符所在的文件地址（注意：和--encrypt-key配置二选一）
 --no-timestamp             # 不创建时间戳目录
 --stream=xbstream          # 使用使用流式压缩 （流式压缩，直接生成压缩文件，只有一次IO（传统是先备份，再压缩，有两次IO），所以效率特别高）
---compress                 # 开启压缩InnoDB数据文件
---compress-threads         # 执行压缩InnoDB数据文件执行的线程数
---compress-chunk-size      # 执行压缩InnoDB数据文件线程的缓存大小（默认64K，最大不能超过1M）
+--compress                 # 开启压缩InnoDB数据文件（注意：这个参数不建议使用，可能会报错）
+--compress-threads         # 执行压缩InnoDB数据文件执行的线程数（注意：这个参数不建议使用，可能会报错）
+--compress-chunk-size      # 执行压缩InnoDB数据文件线程的缓存大小（默认64K，最大不能超过1M）（注意：这个参数不建议使用，可能会报错）
+--decompress               # 开启解压缩InnoDB数据文件（注意：这个参数是在解压缩才使用，而且还要是压缩过的InnoDB数据文件，才能使用（注意：这个参数不建议使用，可能会报错））
 ```
 ##### 4.2、XtraBackup全量热备份命令innobackupex简单使用
 ```bash
@@ -97,9 +98,6 @@ $ innobackupex --defaults-file=/etc/my.cnf            \
 # --encrypt-therads     执行加密的线程数
 # --encrypt-chunk-size  加密线程的缓存大小，默认64K，最大不能超过1M
 # --encrypt-key         秘钥字符（一定要是24个字符）
-# --compress            开启压缩InnoDB数据文件
-# --compress-threads    执行压缩InnoDB数据文件执行的线程数
-# --compress-chunk-size 执行压缩InnoDB数据文件线程的缓存大小（默认64K，最大不能超过1M）
 # --include             只备份mysql库的proc和user表
 # --no-timestamp        不创建时间戳目录
 # --stream=xbstream     使用使用流式压缩 （流式压缩，直接生成压缩文件，只有一次IO（传统是先备份，再压缩，有两次IO），所以效率特别高）              
@@ -112,9 +110,6 @@ $ innobackupex --defaults-file=/etc/my.cnf            \
                --encrypt-therads=10                   \
                --encrypt-chunk-size=512               \
                --encrypt-key=1124hdnvh746r8ushdfjnsdh \
-               --compress                             \
-               --compress-threads=10                  \
-               --compress-chunk-size=512              \
                --include=mysql.proc,mysql.user        \
                --no-timestamp                         \
                --stream=xbstream                      \
@@ -135,17 +130,21 @@ innobackupex --defaults-file=/etc/my.cnf              \
                --encrypt-therads=10                   \
                --encrypt-chunk-size=512               \
                --encrypt-key=1124hdnvh746r8ushdfjnsdh \
-               --compress                             \
-               --compress-threads=10                  \
-               --compress-chunk-size=512              \
-               --include=mysql.proc,mysql.user        \
                --no-timestamp                         \
                --stream=xbstream                      \
                -> /home/xtrabackup-all-res.xbstream
 ```
 
+#### 六、解压缩和解密XtraBackup备份的数据文件（注意：解压缩和解密只是针对压缩和加密过的备份数据文件）
+```bash
+# 解压缩 xtrabackup-all-res.xbstream 文件，到/home/xtrabackup-all-res目录（注意：解压目录需要手动创建）
+$ xbstream -x < /home/xtrabackup-all-res.xbstream -C /home/xtrabackup-all-res
 
-#### 六、XtraBackup全量数据还原（注意：还原数据之前要关闭MySQL，清空数据目录包括表分区的目录）
+# 解密/home/xtrabackup-all-res目录里面的文件数据（--decrypt=加密时的算法，--encrypt-key=加密时的key）
+$ innobackupex --decrypt=AES256 --encrypt-key=1124hdnvh746r8ushdfjnsdh /home/xtrabackup-all-res
+```
+
+#### 七、XtraBackup全量数据还原（注意：还原数据之前要关闭MySQL，清空数据目录包括表分区的目录）
 ```bash
 # 清理备份数据（回滚没有提交的事物，同步已经提交的事物到数据文件）
 # 说明：因为XtraBackup备份数据时不会锁表，所以在备份时可能会有数据正在写入，但还没有提交事物，就被备份出来了。像这样的数据就是要做清理的
