@@ -144,7 +144,42 @@ $ xbstream -x < /home/xtrabackup-all-res.xbstream -C /home/xtrabackup-all-res
 $ innobackupex --decrypt=AES256 --encrypt-key=1124hdnvh746r8ushdfjnsdh /home/xtrabackup-all-res
 ```
 
-#### 七、XtraBackup全量数据还原（注意：还原数据之前要关闭MySQL，清空数据目录包括表分区的目录）
+#### 七、XtraBackup增量热备份数据（注意：增量热备份数据之前需要有全量热备份数据，并且要是已解压和已解密数据）
+```bash
+# 增量热备份数据，不加密，不压缩
+# --incremental-basedir    增量热备份时所使用的全量热备份数据目录（注意：这个目录需要事先备份好）
+# --incremental            开启增量热备份
+$ innobackupex --defaults-file=/etc/my.cnf                            \
+               --host=localhost                                       \
+               --port=3306                                            \
+               --user=root                                            \
+               --password=Jiang@123                                   \
+               --incremental-basedir=/home/backup/2019-07-19_07-45-35 \
+               --incremental                                          \
+               /home/backup/incremental
+               
+               
+# 增量热备份数据，并加密和压缩（注意：文件输出格式一定要是.xbstream格式文件）
+# --incremental-basedir    增量热备份时所使用的全量热备份数据目录（注意：这个目录需要事先备份好）
+# --incremental            开启增量热备份
+$ innobackupex --defaults-file=/etc/my.cnf                            \
+               --host=localhost                                       \
+               --port=3306                                            \
+               --user=root                                            \
+               --password=Jiang@123                                   \
+               --incremental-basedir=/home/backup/2019-07-19_07-45-35 \
+               --incremental                                          \
+               --encrypt=AES256                                       \
+               --encrypt-therads=10                                   \
+               --encrypt-chunk-size=512                               \
+               --encrypt-key=1124hdnvh746r8ushdfjnsdh                 \
+               --no-timestamp                                         \
+               --stream=xbstream                                      \
+               -> /home/backup/incremental.xbstream
+
+```
+
+#### 八、XtraBackup全量数据还原（注意：还原数据之前要关闭MySQL，清空数据目录包括表分区的目录）
 ```bash
 # 清理备份数据（回滚没有提交的事物，同步已经提交的事物到数据文件）
 # 说明：因为XtraBackup备份数据时不会锁表，所以在备份时可能会有数据正在写入，但还没有提交事物，就被备份出来了。像这样的数据就是要做清理的
