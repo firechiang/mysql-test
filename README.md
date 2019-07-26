@@ -66,16 +66,22 @@ $ source /home/tools/4.sql
 $ load data infile "/data/mysql/user.sql" into table user fields terminated by ',' optionally enclosed by '"' lines terminated by '\n';
 ```
 
-#### 二二、找回root账号密码
-##### 22.1 修改[vi /etc/my.cnf]添加如下配置
+#### 二二、修改表名
+```bash
+# 将test_user库的user表改为user1
+$ rename table test_user.user to test_user.user1;
+```
+
+#### 二三、找回root账号密码
+##### 23.1 修改[vi /etc/my.cnf]添加如下配置
 ```bash
 skip-grant-tables                                              # 跳过用户名密码验证
 ```
-##### 22.2 重启mysql服务
+##### 23.2 重启mysql服务
 ```bash
 $ service mysqld restart                                       # 重启服务
 ```
-##### 22.3 修改root密码
+##### 23.3 修改root密码
 ```bash
 $ mysql                                                        # 进入MySQL服务
 $ use mysql;                                                   # 进入MySQL系统库
@@ -83,17 +89,17 @@ $ use mysql;                                                   # 进入MySQL系�
 $ update user set password = password('Jiang@123') where user = 'root';
 $ flush privileges;                                            # 刷新权限
 ```
-##### 22.4 删除[vi /etc/my.cnf]配置文件里面的 skip-grant-tables（跳过用户名密码验证）
-##### 22.5 重启mysql服务
+##### 23.4 删除[vi /etc/my.cnf]配置文件里面的 skip-grant-tables（跳过用户名密码验证）
+##### 23.5 重启mysql服务
 ```bash
 $ service mysqld restart                                       # 重启服务
 ```
-#### 二三、SQL优化（注意：insert 语句后面加 IGNORE 关键字，如果插入数据违反了唯一约束（比如主键或唯一索引），不会报错，会返回受影响行数  0，建议生产使用，比如要查询用户手机是否存在，我直接插入数据就行了，返回0就说明用户手机已存在。插入语句示例：insert ignore into user(name)values(?)）
+#### 二四、SQL优化（注意：insert 语句后面加 IGNORE 关键字，如果插入数据违反了唯一约束（比如主键或唯一索引），不会报错，会返回受影响行数  0，建议生产使用，比如要查询用户手机是否存在，我直接插入数据就行了，返回0就说明用户手机已存在。插入语句示例：insert ignore into user(name)values(?)）
 ```bash
 1，select * from user limit 1000000,10;可优化成：select a.* from user a join(select * from user limit 1000000,10) b on(a.id = b.id);
 ```
 
-#### 二四、Index索引简单说明
+#### 二五、Index索引简单说明
 ```bash
 1，varchar字段建议使用前置索引，因为varchar字段长度大于768个字节将不支持索引
 ```
