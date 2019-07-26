@@ -207,6 +207,7 @@ $ stop slave;
 # master_port           主节点的端口
 # master_user           主节点的用户
 # master_password       主节点的用户密码
+# master_delay          延迟同步时间（单位秒，如果设置了延迟时间，就是延迟同步。注意：延迟同步需要开启GTID）
 # master_log_file       从主节点的哪个bin-log文件开始同步（注意：这个参数可以不写默认同步全部，这个参数值可在主节点上执行：show master status 命令得到）
 # master_log_pos        从主节点的那个bin-log文件的哪个位置开始同步（注意：这个参数可以不写默认同步全部，这个参数值可在主节上点执行：show master status 命令得到）
 # master_auto_position  从第n个的提交事务开始同步（注意：使用这个配置要开启GTID，且不能和master_log_file以及master_log_pos一起使用）
@@ -221,7 +222,7 @@ $ start slave;
 $ show slave status;
 ```
 
-#### 十二、从节点遇到问题数据，停止了同步，解决方案如下（注意：以下命令只适用于开启GTID的同步，且在从节点上执行）
+#### 十二、从节点遇到问题数据，停止了同步。我们可以在从节点上跳过这个问题数据的事物执行，具体操作如下（注意：以下命令只适用于开启GTID的同步，且在从节点上执行）
 ```bash
 # 进入MySQL服务（远程连接：mysql -h127.0.0.1 -P 3306 -uroot -p）
 $ mysql -uroot -p
@@ -234,7 +235,7 @@ $ select * from performance_schema.replication_applier_status_by_worker where LA
 
 # 停止所有的同步管道（停止指定的同步管道：stop slave for channel 'server007'）
 $ stop slave;
-# 设置遇到错误的那个GTID（注意：这个GTID就是上面那个SQL查出来）
+# 跳过遇到错误的那个事物的GTID（注意：这个GTID就是上面那个SQL查出来的。也可以通过查看主节点的binlog日志找到）
 $ set @@session.gtid_next='f3112c52-77ad-11e9-8314-000c29731e3c:1';
 
 # 生成一个空事物的GTID
