@@ -193,4 +193,26 @@ $ innobackupex --defaults-file=/etc/my.cnf --copy-back /home/backup/2019-07-19_0
 $ chown -R mysql:mysql /var/lib/mysql/*
 ```
 
+#### 九、XtraBackup增量数据还原（原理说明：增量数据还原，实际是将增量数据同步到全量数据，再将全量数据还原，注意：要还原某个点的增量数据，需将这个点之前的所有还原点的增量数据同步到全量数据里面去）
+```bash
+# 清理全量备份数据（注意：是全量备份数据，且要是解压和解密以后的数据，切记不能是被清理过的。参数说明：--redo-only（跳过未提交事物的回滚））
+$ innobackupex --apply-log --redo-only /home/backup1/2019-07-22_06-35-44
+
+# 清理某个还原点中间的还原点增量备份数据并其同步到全量备份数据里面去（注意：如果这个还原点之前有还原点，需要先清理和同步之前的还原点，否则可能会出现数据不一致问题）
+# 注意：要是解压和解密以后的数据，切记不能是被清理过的。参数说明：--redo-only（跳过未提交事物的回滚），incremental-dir（增量备份数据目录）
+# /home/backup1/2019-07-22_06-35-44是全量数据备份目录
+$ innobackupex --apply-log --redo-only /home/backup1/2019-07-22_06-35-44 --incremental-dir=/home/backup/incremental2/2019-07-22_06-37-49
+
+# 清理最后那个还原点的增量备份数据并其同步到全量备份数据里面去（注意：如果这个还原点之前有还原点，需要先清理和同步之前的还原点，否则可能会出现数据不一致问题）
+# 注意：要是解压和解密以后的数据，切记不能是被清理过的。参数说明：--incremental-dir（增量备份数据目录）
+# /home/backup1/2019-07-22_06-35-44是全量数据备份目录
+$ innobackupex --apply-log /home/backup1/2019-07-22_06-35-44 --incremental-dir=/home/backup/incremental2/2019-07-22_06-37-49
+
+# 还原数据，注意要关闭MySQL和删除其所有数据（注意：/home/backup1/2019-07-22_06-35-44 是全量数据备份目录，因为我们在上面已经把所有还原点的数据都同步到了全量数据目录）
+$ innobackupex --defaults-file=/etc/my.cnf --copy-back /home/backup1/2019-07-22_06-35-44
+
+# 为还原过来的数据分配用户和用户组，如果有表分区目录也要分配用户和用户组（注意：/var/lib/mysql/* 是数据MysQL的数据目录，如果不分配用户和用户组MySQL将无法启动）
+$ chown -R mysql:mysql /var/lib/mysql/*
+```
+
 [1]: https://github.com/firechiang/linux-test/blob/master/docs/linux-crontable-use.md
