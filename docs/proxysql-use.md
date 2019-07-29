@@ -17,6 +17,7 @@ $ proxysql -help                                         # 查看proxysql命令�
 ```
 
 #### 四、配置文件简要说明（注意：默认配置文件是：/etc/proxysql.cnf，ProxySQL首次启动使用配置文件，以后启动使用ProxySQL配置库里面的数据，而且ProxySQL配置库里面的数据修改了，会实时更新，可以不用重启ProxySQL）
+```bash
 # ProxySQL服务数据存储目录
 datadir="/var/lib/proxysql"
 # ProxySQL日志目录
