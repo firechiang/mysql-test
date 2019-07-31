@@ -250,7 +250,17 @@ $ show tables from stats;                       #  查看stats监控状态库里
 $ show create table global_variables;           # 查看表global_variables的建表语句
 ```
 
-#### 七、使配置立即生效和持久化
+#### 七、添加用户
+```bash
+$ mysql -u admin -padmin -h 127.0.0.1 -P6032    # 进入ProxySQL服务（注意：admin账号，只能本地登录）
+$ select @@admin-admin_credentials;             # 查询当前所有用户名和密码
+$ set admin-admin_credentials='admin:admin;r:r';# 设置用户名密码（这里是添加一个r的用户，密码也是r）
+$ load admin variables to runtime;              # 将main库global_variables表里面admin开头的配置加载到运行时（立即生效）
+$ save admin variables to mem;                  # 将main库global_variables表里面admin开头的配置加载到内存（提高效率）
+$ save admin variables to disk;                 # 将main库global_variables表里面admin开头的配置持久化（ProxySQL服务重启还有效）
+```
+
+#### 八、使配置立即生效和持久化
 ```bash
 $ mysql -u admin -padmin -h 127.0.0.1 -P6032    # 进入ProxySQL服务（注意：admin账号，只能本地登录）
 
