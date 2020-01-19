@@ -21,6 +21,7 @@ $ mysql -uroot -pJiang@123                                                      
 
 #### 二、优化配置[vi /etc/my.cnf]
 ```bash
+character_set_server=utf8mb4
 default-time-zone='+8:00'
 ###################base###########################
 max_connections=8000                       # 允许最大连接数
