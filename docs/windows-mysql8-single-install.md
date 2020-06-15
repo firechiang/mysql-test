@@ -10,9 +10,9 @@ $ wget -P https://dev.mysql.com/get/Downloads/MySQL-8.0/mysql-8.0.20-winx64.zip
 default-time-zone='+8:00'
 # 设置3306端口
 port=3306
-# 设置mysql的安装目录
+# 设置mysql的安装目录（注意修改）
 basedir=C:\MySQL8\mysql-8.0.20-winx64
-# 设置mysql数据库的数据的存放目录
+# 设置mysql数据库的数据的存放目录（注意修改）
 datadir=C:\MySQL8\mysql-8.0.20-winx64\data
 # 允许最大连接数
 max_connections=200
