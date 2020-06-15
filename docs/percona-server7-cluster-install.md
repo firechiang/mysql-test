@@ -50,6 +50,7 @@ log_slave_updates
 expire_logs_days=0
 # 配置字符集
 character_set_server=utf8mb4
+default-time-zone='+8:00'
 # 绑定
 bind-address=0.0.0.0
 # 跳过DNS解析

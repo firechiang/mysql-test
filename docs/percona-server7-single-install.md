@@ -20,6 +20,7 @@ $ yum localinstall *.rpm
 
 #### 三、修改[vi /etc/my.cnf]配置
 ```bash
+default-time-zone='+8:00'
 character_set_server=utf8mb4
 bind-address=0.0.0.0
 # 跳过DNS解析
