@@ -19,6 +19,8 @@
 #### 十九、[Explain执行计划说明][2]
 #### 二十、常用操作简单使用
 ```bash
+show [session|global] status;                                                   # 查看数据库所有状态信息（session当前连接，global（全部））
+
 truncate table 表名;                                                             # 清空整张表数据
 
 set global max_allowed_packet = 1024*1024;                                       # 加大mysq批量插入的数量
