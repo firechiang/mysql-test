@@ -90,8 +90,10 @@ $ service mysqld restart                                       # 重启服务
 ```bash
 $ mysql                                                        # 进入MySQL服务
 $ use mysql;                                                   # 进入MySQL系统库
-# 修改root账号密码
+# mysql5.x修改root账号密码
 $ update user set password = password('Jiang@123') where user = 'root';
+# mysql8.x修改密码
+$ alter user 'root'@'localhost' identified with mysql_native_password by '@Ji123456';
 $ flush privileges;                                            # 刷新权限
 ```
 ##### 26.4 删除[vi /etc/my.cnf]配置文件里面的 skip-grant-tables（跳过用户名密码验证）
